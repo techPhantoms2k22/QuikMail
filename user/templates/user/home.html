@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openHome(event, 'signIn')" id="defaultOpen">Sign-In</button>
+        <button class="tablinks" onclick="openHome(event, 'signUp')">Sign-Up</button>
+    </div>
+
+    <div id="signIn" class="tabcontent">
+        <div class="container" style="width: 50%">
+            <br />
+            <div class="panel panel-default">
+                <div class="panel-heading" style="text-align :center;">
+                    <h2>Sign-In</h2>
+                </div>
+                <div class="panel-body">
+                    <form action="" method="post" id="captch_form">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="username" id="email" class="form-control" /><span
+                                id="mail_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" id="password" class="form-control" /><span
+                                id="pass_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label>Enter the Captcha</label>
+                                <div class="input-group">
+
+                                    <input type="text" name="captcha_code" id="captcha_code" class="form-control" />
+                                    <span class="input-group-addon" id="captchaVal" style="padding:0">
+                                        DADUR
+                                    </span>
+
+                                </div>
+                                <input type="button" name="refresh" id="refresh" class="btn btn-info " value="Refresh"
+                                    style="float: right; margin-top: 1%; padding: 0.9%">
+                                <span style="color: red; font-size: small; display: none;" id="caperror">Wrong
+                                    Code</span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="text-align: center; margin-top: 7%">
+                            <input type="submit" name="register" id="register" class="btn btn-info" value="LOG IN" />
+                        </div>
+                    </form>
+                    <!-- <div style="text-align: center;">
+                        If not registered? <a href="registration.html">Sign Up</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+
+                $('#captch_form').on('submit', function (event) {
+                    var mail = $("#email").val();
+                    if (mail == '') {
+                        $("#mail_error").html("Please enter Email");
+                        $("#mail_error").show();
+                        $("#email").css("border-color", "red");
+                        return false;
+                    }
+                    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                    if (!mailformat.test(mail)) {
+                        alert("Invalid Email");
+                        return false;
+                    }
+                    var psw = $("#password").val();
+                    var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+                    if (psw == '') {
+                        $("#pass_error").html("Please enter valid password");
+                        $("#pass_error").show();
+                        $("#password").css("border-color", "red");
+                        return false;
+                    }
+                    event.preventDefault();
+                    if ($('#captcha_code').val() == '') {
+                        $('#caperror').show();
+                        $('#caperror').text('Enter Captcha Code');
+                        $(':input[type="submit"]').prop('disabled', true);
+                        return false;
+                    }
+                    else {
+                        alert('Form has been validate with Captcha Code');
+                        $('#caperror').hide();
+                        $('#captch_form')[0].reset();
+                        $('#captcha_image').attr('src', 'image.php');
+                    }
+                });
+
+                $("#captcha_code").keyup(function () {
+                    var enterVal = $('#captcha_code').val();
+                    var givenVal = $('#captchaVal').text();
+                    if (enterVal === givenVal) {
+                        $(':input[type="submit"]').prop('disabled', false);
+                    } else {
+                        $(':input[type="submit"]').prop('disabled', true);
+                    }
+                });
+                $("#email").focus(function (e) {
+                    $("#mail_error").hide();
+                    $("#email").css("border-color", "");
+                });
+                $("#captcha_code").focus(function (e) {
+                    $("#caperror").hide();
+                    $("#captcha_code").css("border-color", "");
+                });
+                $("#password").focus(function (e) {
+                    $("#pass_error").hide();
+                    $("#password").css("border-color", "");
+                });
+
+                $("#refresh").click(function () {
+                    var allValue = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+                    var fVal = allValue[Math.floor(Math.random() * allValue.length)]
+                    var sVal = allValue[Math.floor(Math.random() * allValue.length)]
+                    var tVal = allValue[Math.floor(Math.random() * allValue.length)]
+                    var frVal = allValue[Math.floor(Math.random() * allValue.length)]
+                    var ftVal = allValue[Math.floor(Math.random() * allValue.length)]
+                    var siVal = allValue[Math.floor(Math.random() * allValue.length)]
+
+                    var captcha = fVal + sVal + tVal + frVal + ftVal + siVal
+
+                    captchaVal.innerHTML = captcha
+
+                    const setBg = () => {
+                        const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+                        //document.body.style.backgroundColor = "#" + randomColor;
+                        captchaVal.innerHTML = "#" + randomColor;
+                    }
+                });
+
+            });
+        </script>
+    </div>
+
+    <div id="signUp" class="tabcontent">
+        <div class="container" style="width:50%">
+            <br />
+            <div class="panel panel-default">
+                <div class="panel-heading" style="text-align :center;">
+                    <h2>Sign-Up</h2>
+                </div>
+                <div class="panel-body">
+                    <form action="" method="post" id="reg_form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>User Name<span>*</span></label>
+                            <input type="text" name="uID" id="uID" class="form-control" placeholder="User Name">
+                            <span id="uID_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>First Name<span>*</span></label>
+                                    <input type="text" name="fname" id="fname" class="form-control"
+                                        placeholder="First Name" />
+                                    <span id="fname_error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Last Name<span>*</span></label>
+                                    <input type="text" name="lname" id="lname" class="form-control"
+                                        placeholder="Last Name" />
+                                    <span id="lname_error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6"><label><b>Password<span>*</span></b></label>
+                                    <input type="password" placeholder="Enter Password" name="psw" id="psw"
+                                        class="form-control">
+                                    <span id="p1_error"></span>
+                                </div>
+                                <div class="col-md-6"><label><b>Repeat Password<span>*</span></b></label>
+                                    <input type="password" placeholder="Repeat Password" name="psw-repeat"
+                                        id="psw_repeat" class="form-control">
+                                    <span id="p_error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6" style="text-align: right;">
+                                    <input type="submit" name="btn_register" id="btn_register" class="btn btn-info"
+                                        value="Register" />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="reset" name="btn_reset" id="btn_reset" class="btn btn-info"
+                                        value="Reset" />
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </form>
+                <!-- <div style="text-align: center;">
+                    If already registered? <a href="login.html">Sign In</a>
+                </div> -->
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function (e) {
+                $("#btn_register").click(function (e) {
+                    var uID = $("#uID").val();
+                    if (uID == '') {
+                        $("#uID_error").html("Please enter User Name");
+                        $("#uID_error").show();
+                        $("#uID").css("border-color", "red");
+                        return false;
+                    }
+                    var fname = $("#fname").val();
+                    if (fname == '') {
+                        //$("#fname_error").html("Please enter First Name");
+                        $("#fname_error").html(login.html);
+                        $("#fname_error").show();
+                        $("#fname").css("border-color", "red");
+                        return false;
+                    }
+                    var lname = $("#lname").val();
+                    if (lname == '') {
+                        $("#lname_error").html("Please enter Last Name");
+                        $("#lname_error").show();
+                        $("#lname").css("border-color", "red");
+                        return false;
+                    }
+
+                    var psw = $("#psw").val();
+                    var psw_repeat = $("#psw_repeat").val();
+                    var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+                    if (psw == "") {
+                        $("#p1_error").html("Enter Password");
+                        $("#p1_error").show();
+                        $("#psw").css("border-color", "red");
+                        return false;
+                    }
+                    //if(!psw.test(passw)) 
+                    //{ 
+                    //	alert('Please input valid passwords')
+                    //	return false;
+                    //}
+
+                    if ($("#psw").val() != $("#psw_repeat").val()) {
+                        //alert('hi')
+
+                        $("#p_error").html("Passwords do not match");
+                        $("#p_error").show();
+                        $("#psw_repeat").css("border-color", "red");
+                        return false;
+                    }
+                });
+                $("#uID").focus(function (e) {
+                    $("#uID_error").hide();
+                    $("#uID").css("border-color", "");
+                });
+                $("#fname").focus(function (e) {
+                    $("#fname_error").hide();
+                    $("#fname").css("border-color", "");
+                });
+                $("#lname").focus(function (e) {
+                    $("#lname_error").hide();
+                    $("#lname").css("border-color", "");
+                });
+
+                $("#psw_repeat").focus(function (e) {
+                    $("#p_error").hide();
+                    $("#psw_repeat").css("border-color", "");
+                });
+                $("#psw").focus(function (e) {
+                    $("#p1_error").hide();
+                    $("#psw").css("border-color", "");
+                });
+
+            });
+        </script>
+    </div>
+    </div>
+
+    <script>
+        function openHome(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
+
+</body>
+
+</html>
