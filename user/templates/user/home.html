@@ -57,14 +57,13 @@
         }
     </style>
 </head>
-
 <body>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     {% for message in messages %}
-        <div class="alert {{ message.tags }} " role="alert"
-        style="position: fixed;top: 16%;width: 100%;font-family: monospace;text-align: center;">
-        {{message}}</div>
+    <script>
+            swal("{{message}}");
+    </script>
     {% endfor %}
-
     <div class="tab">
         <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" />
         <button class="tablinks" onclick="openHome(event, 'signIn')" id="defaultOpen">Sign-In</button>
