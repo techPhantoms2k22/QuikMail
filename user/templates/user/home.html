@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -5,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <style>
@@ -12,48 +15,58 @@
             font-family: Arial;
         }
 
-        /* Style the tab */
         .tab {
             overflow: hidden;
-            border: 1px solid #ccc;
-            background-color: #f1f1f1;
+            border: 1px solid rgb(46, 46, 46);
+            background-color: #285664;
+            color: #000000;
         }
 
-        /* Style the buttons inside the tab */
         .tab button {
             background-color: inherit;
-            float: left;
+            float: right;
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 22px 70px;
             transition: 0.3s;
-            font-size: 17px;
+            font-size: 20px;
         }
 
-        /* Change background color of buttons on hover */
+        .tab img {
+            float: left;
+            object-fit: contain;
+            height: 70px;
+            margin-left: 5px;
+        }
+
         .tab button:hover {
             background-color: #ddd;
         }
 
-        /* Create an active/current tablink class */
         .tab button.active {
             background-color: #ccc;
         }
 
-        /* Style the tab content */
         .tabcontent {
             display: none;
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
+            background-color: #112b32;
         }
     </style>
 </head>
 
 <body>
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} " role="alert"
+        style="position: fixed;top: 16%;width: 100%;font-family: monospace;text-align: center;">
+        {{message}}</div>
+    {% endfor %}
 
     <div class="tab">
+        <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" />
         <button class="tablinks" onclick="openHome(event, 'signIn')" id="defaultOpen">Sign-In</button>
         <button class="tablinks" onclick="openHome(event, 'signUp')">Sign-Up</button>
     </div>
@@ -62,45 +75,26 @@
         <div class="container" style="width: 50%">
             <br />
             <div class="panel panel-default">
-                <div class="panel-heading" style="text-align :center;">
+                <div class="panel-heading" style="text-align :center; background-color:#285664; color:white">
                     <h2>Sign-In</h2>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" style="background-color:#ccc;">
                     <form action="" method="post" id="captch_form">
+                        {% csrf_token %}
                         <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" id="email" class="form-control" /><span
-                                id="mail_error"></span>
-                        </div>
+                            <label>Username*</label><br>
+                            <input type="text" name="uname" id="uname" class="form-control"
+                                placeholder="Username" /><span id="uname_error"></span>
+                        </div><br>
                         <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" id="password" class="form-control" /><span
-                                id="pass_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-group">
-                                <label>Enter the Captcha</label>
-                                <div class="input-group">
-
-                                    <input type="text" name="captcha_code" id="captcha_code" class="form-control" />
-                                    <span class="input-group-addon" id="captchaVal" style="padding:0">
-                                        DADUR
-                                    </span>
-
-                                </div>
-                                <input type="button" name="refresh" id="refresh" class="btn btn-info " value="Refresh"
-                                    style="float: right; margin-top: 1%; padding: 0.9%">
-                                <span style="color: red; font-size: small; display: none;" id="caperror">Wrong
-                                    Code</span>
-                            </div>
-                        </div>
-                        <div class="form-group" style="text-align: center; margin-top: 7%">
-                            <input type="submit" name="register" id="register" class="btn btn-info" value="LOG IN" />
+                            <label>Password*</label><br>
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Password" /><span id="pass_error"></span>
+                        </div><br>
+                        <div class="form-group" style="text-align: center; margin-top: 2%">
+                            <input type="submit" name="register" id="register" class="btn btn-primary" value="LOG IN" style="background-color: #285664;"/>
                         </div>
                     </form>
-                    <!-- <div style="text-align: center;">
-                        If not registered? <a href="registration.html">Sign Up</a>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -108,16 +102,11 @@
             $(document).ready(function () {
 
                 $('#captch_form').on('submit', function (event) {
-                    var mail = $("#email").val();
-                    if (mail == '') {
-                        $("#mail_error").html("Please enter Email");
-                        $("#mail_error").show();
-                        $("#email").css("border-color", "red");
-                        return false;
-                    }
-                    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                    if (!mailformat.test(mail)) {
-                        alert("Invalid Email");
+                    var uname = $("#uname").val();
+                    if (uname == '') {
+                        $("#uname_error").html("Please Enter Username");
+                        $("#uname_error").show();
+                        $("#uname").css("border-color", "red");
                         return false;
                     }
                     var psw = $("#password").val();
@@ -128,61 +117,15 @@
                         $("#password").css("border-color", "red");
                         return false;
                     }
-                    event.preventDefault();
-                    if ($('#captcha_code').val() == '') {
-                        $('#caperror').show();
-                        $('#caperror').text('Enter Captcha Code');
-                        $(':input[type="submit"]').prop('disabled', true);
-                        return false;
-                    }
-                    else {
-                        alert('Form has been validate with Captcha Code');
-                        $('#caperror').hide();
-                        $('#captch_form')[0].reset();
-                        $('#captcha_image').attr('src', 'image.php');
-                    }
                 });
 
-                $("#captcha_code").keyup(function () {
-                    var enterVal = $('#captcha_code').val();
-                    var givenVal = $('#captchaVal').text();
-                    if (enterVal === givenVal) {
-                        $(':input[type="submit"]').prop('disabled', false);
-                    } else {
-                        $(':input[type="submit"]').prop('disabled', true);
-                    }
-                });
-                $("#email").focus(function (e) {
-                    $("#mail_error").hide();
-                    $("#email").css("border-color", "");
-                });
-                $("#captcha_code").focus(function (e) {
-                    $("#caperror").hide();
-                    $("#captcha_code").css("border-color", "");
+                $("#uname").focus(function (e) {
+                    $("#uname_error").hide();
+                    $("#uname").css("border-color", "");
                 });
                 $("#password").focus(function (e) {
                     $("#pass_error").hide();
                     $("#password").css("border-color", "");
-                });
-
-                $("#refresh").click(function () {
-                    var allValue = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-                    var fVal = allValue[Math.floor(Math.random() * allValue.length)]
-                    var sVal = allValue[Math.floor(Math.random() * allValue.length)]
-                    var tVal = allValue[Math.floor(Math.random() * allValue.length)]
-                    var frVal = allValue[Math.floor(Math.random() * allValue.length)]
-                    var ftVal = allValue[Math.floor(Math.random() * allValue.length)]
-                    var siVal = allValue[Math.floor(Math.random() * allValue.length)]
-
-                    var captcha = fVal + sVal + tVal + frVal + ftVal + siVal
-
-                    captchaVal.innerHTML = captcha
-
-                    const setBg = () => {
-                        const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-                        //document.body.style.backgroundColor = "#" + randomColor;
-                        captchaVal.innerHTML = "#" + randomColor;
-                    }
                 });
 
             });
@@ -193,10 +136,10 @@
         <div class="container" style="width:50%">
             <br />
             <div class="panel panel-default">
-                <div class="panel-heading" style="text-align :center;">
+                <div class="panel-heading" style="text-align :center; background-color:#285664; color:white">
                     <h2>Sign-Up</h2>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" style="background-color:#ccc;">
                     <form action="" method="post" id="reg_form">
                         {% csrf_token %}
                         <div class="form-group">
@@ -240,20 +183,17 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6" style="text-align: right;">
-                                    <input type="submit" name="btn_register" id="btn_register" class="btn btn-info"
-                                        value="Register" />
+                                    <input type="submit" name="btn_register" id="btn_register" class="btn btn-primary"
+                                        value="Register" style="background-color: #285664;"/>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="reset" name="btn_reset" id="btn_reset" class="btn btn-info"
-                                        value="Reset" />
+                                    <input type="reset" name="btn_reset" id="btn_reset" class="btn btn-primary"
+                                        value="Reset" style="background-color: #285664;"/>
                                 </div>
                             </div>
                         </div>
                 </div>
                 </form>
-                <!-- <div style="text-align: center;">
-                    If already registered? <a href="login.html">Sign In</a>
-                </div> -->
             </div>
         </div>
         <script type="text/javascript">
@@ -268,8 +208,7 @@
                     }
                     var fname = $("#fname").val();
                     if (fname == '') {
-                        //$("#fname_error").html("Please enter First Name");
-                        $("#fname_error").html(login.html);
+                        $("#fname_error").html("Please enter First Name");
                         $("#fname_error").show();
                         $("#fname").css("border-color", "red");
                         return false;
@@ -291,15 +230,7 @@
                         $("#psw").css("border-color", "red");
                         return false;
                     }
-                    //if(!psw.test(passw)) 
-                    //{ 
-                    //	alert('Please input valid passwords')
-                    //	return false;
-                    //}
-
                     if ($("#psw").val() != $("#psw_repeat").val()) {
-                        //alert('hi')
-
                         $("#p_error").html("Passwords do not match");
                         $("#p_error").show();
                         $("#psw_repeat").css("border-color", "red");
@@ -347,10 +278,53 @@
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
         }
-
-        // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
     </script>
+
+    <!-- Footer Starts -->
+    <div class="footer-clean">
+        <footer>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Credits</h3>
+                        <ul>
+                            <li><a href="#">Manosij Tarafdar</a></li>
+                            <li><a href="#">Surjo Seth</a></li>
+                            <li><a href="#">Manideep Bhattacharyya</a></li>
+                            <li><a href="#">Rajdip Roy</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Tech Used</h3>
+                        <ul>
+                            <li><a href="#">Django</a></li>
+                            <li><a href="#">HTML</a></li>
+                            <li><a href="#">CSS/Bootstrap</a></li>
+                            <li><a href="#">Python</a></li>
+                            <li><a href="#">Firebase</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>Contact Us</h3>
+                        <ul>
+                            <li><a href="#">manosijindia@gmail.com</a></li>
+                            <li><a href="#">0123.surjo@gmail.com</a></li>
+                            <li><a href="#">manideepbhattacharyya2002@gmail.com</a></li>
+                            <li><a href="#">rajdiproy755@gmail.com</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a
+                            href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i
+                                class="icon ion-social-snapchat"></i></a><a href="#"><i
+                                class="icon ion-social-instagram"></i></a>
+                        <p class="copyright">TechPhantoms © 2022</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Footer Ends -->
 
 </body>
 

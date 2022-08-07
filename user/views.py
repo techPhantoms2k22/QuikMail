@@ -4,10 +4,12 @@ from datetime import datetime as dt
 import user
 from user.models import userDB
 from .forms import NewUserForm
-from django.contrib.auth import login
+from django.contrib.auth import login , authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password , check_password
+from django.contrib.auth.models import User
+from django.contrib import messages
 # from sastaMail.settings import USERNAME
 # Create your views here.
 #################################################################
@@ -75,13 +77,27 @@ def home(request):
             lname = request.POST['lname']
             userid = request.POST['uID']
             password = request.POST['psw']
-            password = make_password(password)     
-            keyGen(userid,fname,lname,password)
-        elif request.POST.get('username'):
-            userName = request.POST['username']
+            try:
+                checkUser = User.objects.get(username = userid)
+                messages.error(request,"Username Exists")
+            except:
+                user = User.objects.create_user(username = userid,email = None,password = password)
+                user.first_name = fname
+                user.last_name = lname
+                user.save()
+                messages.success(request,"User Created")
+        elif request.POST.get('uname'):
+            print("HERE")
+            userName = request.POST['uname']
             userPassword = request.POST['password']
-            login(userName,userPassword)
-            return HttpResponse("Logged")
+            user = authenticate(request,username = userName,password = userPassword)
+            if user is not None:
+                login(request,user)
+                return HttpResponse("Logged")
+            else:
+                return HttpResponse("Auth Error")
+        else:
+            return HttpResponse("ERROR")
     return render(request,'user/home.html')
 #################################################################
 #Testing
