@@ -10,16 +10,32 @@
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+
     <style>
+        /* swal css */
+        div.swal2-html-container{
+            /* background-color: black; */
+            /* font-family: Arial, Helvetica, sans-serif; */
+            font-size: large;
+            /* height: 100px; */
+        }
+        div.swal2-actions{
+            font-size: 15px;
+        }
         body {
-            font-family: Arial;
+            font-family: consolas;
+            /* font-size: 10rem; */
         }
 
         .tab {
             overflow: hidden;
             border: 1px solid rgb(46, 46, 46);
-            background-color: #285664;
-            color: #000000;
+            background-color:white;
+            color:whitesmoke;
         }
 
         .tab button {
@@ -41,11 +57,12 @@
         }
 
         .tab button:hover {
-            background-color: #ddd;
+            background-color: whitesmoke;
         }
 
         .tab button.active {
             background-color: #ccc;
+            color: #000040;
         }
 
         .tabcontent {
@@ -58,11 +75,32 @@
     </style>
 </head>
 <body>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="sweetalert2.all.min.js"></script>
     {% for message in messages %}
-    <script>
-            swal("{{message}}");
-    </script>
+        {% if message.level == 40 %}
+        <script>
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: "{{message}}",
+                        width: "500px",
+                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
+                    })
+        </script>
+        {% else %}
+        <script>
+            Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '{{message}}',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+        </script>
+        {% endif %}
     {% endfor %}
     <div class="tab">
         <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" />
