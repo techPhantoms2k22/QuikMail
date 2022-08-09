@@ -4,12 +4,16 @@ from datetime import datetime as dt
 import user
 from user.models import userDB
 from .forms import NewUserForm
-from django.contrib.auth import login , authenticate
+from django.contrib.auth import login , authenticate , logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password , check_password
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.views.csrf import csrf_failure
+from django.contrib.auth.decorators import login_required
+def csrf_failure(request,reason="Error Loading"):
+    return redirect('home')
 # from sastaMail.settings import USERNAME
 # Create your views here.
 #################################################################
@@ -71,6 +75,8 @@ def keyGen(username,first_name,last_name,password):
 #End
 #################################################################
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     if request.method == "POST":
         if request.POST.get('fname') and request.POST.get('lname'):
             fname = request.POST['fname']
@@ -85,20 +91,33 @@ def home(request):
                 user.first_name = fname
                 user.last_name = lname
                 user.save()
-                messages.success(request,"User Created")
+                messages.success(request,"Account Created")
         elif request.POST.get('uname'):
-            print("HERE")
             userName = request.POST['uname']
             userPassword = request.POST['password']
             user = authenticate(request,username = userName,password = userPassword)
             if user is not None:
                 login(request,user)
-                return HttpResponse("Logged")
+                return redirect('dashboard')
             else:
-                return HttpResponse("Auth Error")
+                messages.error(request,"Username , Password does not exists")
         else:
             return HttpResponse("ERROR")
     return render(request,'user/home.html')
+
+import json
+def dashboard(request):
+    if request.POST.get('userName'):
+        name = request.POST.get('userName')
+        print("hello ")
+        print(name)
+    else:
+        print("BAL")
+    return render(request,'user/dashboard.html')
+
+def logoutUser(request):
+    logout(request)
+    return redirect('home')
 #################################################################
 #Testing
 #################################################################
