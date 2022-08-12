@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,14 +12,19 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="sweetalert2.all.min.js"></script>
-    <script src="sweetalert2.min.js"></script>
-    <link rel="stylesheet" href="sweetalert2.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>QuikMail</title>
     <style>
+        div.swal2-html-container{
+            /* background-color: black; */
+            /* font-family: Arial, Helvetica, sans-serif; */
+            font-size: large;
+            /* height: 100px; */
+        }
+        div.swal2-actions{
+            font-size: 15px;
+        }
         :root {
             --clr-neon: #429bb6;
             --clr-dang: red;
@@ -26,7 +32,7 @@
         }
 
         body {
-            font-family: Arial;
+            font-family: consolas;
             background-color: #112b32;
         }
 
@@ -282,17 +288,15 @@
 
     <!-- Nav bar Starts -->
     <div class="tab">
-        <img src="QuikMail1.png" alt="Image aschena ki korbo ?" style="filter: invert(1);" />
-        <button class="fa btn btn-primary btn-circle btn-sm" id="reload"><i class="fa fa-power-off"
-                aria-hidden="true"></i></button>
-        <button class="fa btn btn-primary btn-circle btn-sm" id="quit"
-            onClick="window.location.href=window.location.href">&#xf021;</button>
+        <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" style="filter: invert(1);" />
+        <a href="{% url 'logout' %}"><button class="fa btn btn-primary btn-circle btn-sm" id="reload"><i class="fa fa-power-off" aria-hidden="true"></i></button></a>
+        <button class="fa btn btn-primary btn-circle btn-sm" id="quit" onClick="window.location.href=window.location.href">&#xf021;</button>
     </div>
     <!-- Nav bar Ends -->
 
     <!-- List of all mails Starts -->
     <div class="tab2">
-        <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, Username</Label>
+        <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.first_name}}</Label>
         <button class="tablinks" onclick="openMail(event, 'outbox')">Sent</button>
         <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
     </div>
@@ -300,59 +304,18 @@
     <div class="container vertical-scrollable">
         <div id="inbox" class="tabcontent">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action"><b>Lorem ipsum</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Lorem ipsum</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Lorem ipsum</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
+                {% for message in incoming %}
+                <a href="#" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
+                {% endfor %}
             </div>
         </div>
 
         <div id="outbox" class="tabcontent">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
+                {% for message in outgoing %}
+                <a href="#" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
+                {% endfor %}
+                <!-- <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
                     facilisis
                     in</a>
                 <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
@@ -402,7 +365,7 @@
                 <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
                     consectetur ac</a>
                 <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
+                    eros</a> -->
             </div>
         </div>
     </div>
@@ -433,7 +396,8 @@
     <!-- Compose Starts -->
     <button class="open-button" onclick="openForm()">Compose</button>
     <div class="chat-popup" id="myForm">
-        <form action="" class="form-container">
+        <form action="" class="form-container" method="post">
+            {% csrf_token %}
             <h1><b>Compose</b></h1>
 
             <input type="text" name="to" placeholder="To" required/>
@@ -455,7 +419,33 @@
         }
     </script>
     <!-- Compose Ends -->
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="sweetalert2.all.min.js"></script>
+    {% for message in messages %}
+        {% if message.level == 40 %}
+        <script>
+            Swal.fire({
+                        icon: 'error',
+                        title: 'ERROR',
+                        text: "{{message}}",
+                        width: "500px",
+                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
+                    })
+        </script>
+        {% else %}
+        <script>
+            Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '{{message}}',
+                        showConfirmButton: false,
+                        timer: 1700
+                    })
+        </script>
+        {% endif %}
+    {% endfor %}
 </body>
 
 </html>

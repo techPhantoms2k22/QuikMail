@@ -34,7 +34,7 @@
         .tab {
             overflow: hidden;
             border: 1px solid rgb(46, 46, 46);
-            background-color:white;
+            background-color:#285664;
             color:whitesmoke;
         }
 
@@ -58,6 +58,7 @@
 
         .tab button:hover {
             background-color: whitesmoke;
+            color: #000040;
         }
 
         .tab button.active {
@@ -103,7 +104,7 @@
         {% endif %}
     {% endfor %}
     <div class="tab">
-        <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" />
+        <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" style="filter: invert(1);" />
         <button class="tablinks" onclick="openHome(event, 'signIn')" id="defaultOpen">Sign-In</button>
         <button class="tablinks" onclick="openHome(event, 'signUp')">Sign-Up</button>
     </div>

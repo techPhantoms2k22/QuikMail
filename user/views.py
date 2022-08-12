@@ -1,3 +1,4 @@
+from unittest import result
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from datetime import datetime as dt
@@ -12,6 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.csrf import csrf_failure
 from django.contrib.auth.decorators import login_required
+from datetime import datetime as DT
 def csrf_failure(request,reason="Error Loading"):
     return redirect('home')
 # from sastaMail.settings import USERNAME
@@ -60,15 +62,15 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP ,PKCS1_v1_5
 import binascii
 
-def keyGen(username,first_name,last_name,password):
+def keyGen(username):
     keyPair = RSA.generate(1024)
     pubKey = keyPair.publickey()
     keyPair = keyPair.exportKey()
     # keyN = hex(pubKey.n)
     # keyE = hex(pubKey.e)
     # keyD = hex(keyPair.d)
-    data = userDB(username=username,first_name=first_name,last_name=last_name,password=password)
-    data.save()
+    # data = userDB(username=username,first_name=first_name,last_name=last_name,password=password)
+    # data.save()
     insertKey(username,pubKey.exportKey())
     privateKey(username,keyPair)
 #################################################################
@@ -91,6 +93,7 @@ def home(request):
                 user.first_name = fname
                 user.last_name = lname
                 user.save()
+                keyGen(userid)
                 messages.success(request,"Account Created")
         elif request.POST.get('uname'):
             userName = request.POST['uname']
@@ -106,14 +109,75 @@ def home(request):
     return render(request,'user/home.html')
 
 import json
+@login_required(login_url='home')
 def dashboard(request):
-    if request.POST.get('userName'):
-        name = request.POST.get('userName')
-        print("hello ")
-        print(name)
-    else:
-        print("BAL")
-    return render(request,'user/dashboard.html')
+    if request.method == "POST":
+        reciever = request.POST['to']
+        subject = request.POST['sub']
+        message = request.POST['msg']
+        #Firebase Connection
+        connection()
+        myDB = firestore.client()
+        #Encryption
+        myData = myDB.collection('usersDB').document(reciever).get()
+        try:
+            publicKey = myData.to_dict()['publicKey']
+        except:
+            messages.error(request,"Username Invalid.")
+            return redirect('dashboard')
+        message = bytes(message,'utf-8')
+        encryptor = PKCS1_OAEP.new(RSA.import_key(publicKey))
+        encrypted = encryptor.encrypt(message)
+        messageContent = {
+            'timeStamp':DT.now(),
+            'subject':subject,
+            'message':encrypted,
+        }
+        sender = request.user.username
+        messageContent['to'] = reciever
+        myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
+        del messageContent['to']
+        messageContent['by'] = sender
+        myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
+        messages.success(request,"Message Successfully Sent.")
+        return redirect('home')
+    incoming = incomingMessages(request.user.username)
+    outgoing = outgoingMessages(request.user.username)
+    context = {
+                'incoming':incoming,
+                'outgoing':outgoing,
+            }
+    return render(request,'user/index.html',context)
+
+def incomingMessages(userName):
+    connection()
+    myFireStore = firestore.client()
+    queryObj = myFireStore.collection('usersDB').document(userName).collection('inbox')
+    results = queryObj.order_by('timeStamp',direction = firestore.Query.DESCENDING)
+    ovlResults = list(results.stream())
+    context = list()
+    for each in ovlResults:
+        temp = dict()
+        obj = each.to_dict()
+        temp['by'] = obj['by']
+        temp['subject'] = obj['subject']
+        context.append(temp)
+    return context
+
+def outgoingMessages(userName):
+    connection()
+    myFireStore = firestore.client()
+    queryObj = myFireStore.collection('usersDB').document(userName).collection('outbox')
+    results = queryObj.order_by('timeStamp',direction = firestore.Query.DESCENDING)
+    ovlResults = list(results.stream())
+    context = list()
+    for each in ovlResults:
+        temp = dict()
+        obj = each.to_dict()
+        temp['to'] = obj['to']
+        temp['subject'] = obj['subject']
+        context.append(temp)
+    return context
 
 def logoutUser(request):
     logout(request)
@@ -142,7 +206,6 @@ def test(request):
         }
         myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
         myDB.collection('usersDB').document(reciv).collection('inbox').add(messageContent)
-        # print("**************",type(publicKey))
     return render(request,'user/message.html')
 
 def test1(request):
