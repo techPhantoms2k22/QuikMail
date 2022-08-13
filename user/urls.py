@@ -6,8 +6,6 @@ urlpatterns = [
     path('',views.home,name='home'),
     path("logout/", views.logoutUser, name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
+    path("message/<str:id>", views.seeMessage, name="message"),
     #Test
-    path('test/',views.test,name='test'),
-    path('test1/',views.test1,name='test1'),
-
 ]

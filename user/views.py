@@ -24,13 +24,14 @@ def csrf_failure(request,reason="Error Loading"):
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from firebase_admin.firestore import SERVER_TIMESTAMP
 def connection():
     cred = credentials.Certificate("user/serviceAccountKey.json")
     try:
         firebase_admin.initialize_app(cred)
-        firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S'))
+        # firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S'))
     except:
-        firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S'))
+        firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S%f'))
 
 def insertKey(username,publicKey):
     connection()
@@ -63,7 +64,7 @@ from Crypto.Cipher import PKCS1_OAEP ,PKCS1_v1_5
 import binascii
 
 def keyGen(username):
-    keyPair = RSA.generate(1024)
+    keyPair = RSA.generate(2048)
     pubKey = keyPair.publickey()
     keyPair = keyPair.exportKey()
     # keyN = hex(pubKey.n)
@@ -129,7 +130,8 @@ def dashboard(request):
         encryptor = PKCS1_OAEP.new(RSA.import_key(publicKey))
         encrypted = encryptor.encrypt(message)
         messageContent = {
-            'timeStamp':DT.now(),
+            'id':DT.now().strftime('%y%m%d%H%M%S%f'),
+            'timeStamp':SERVER_TIMESTAMP,
             'subject':subject,
             'message':encrypted,
         }
@@ -161,6 +163,7 @@ def incomingMessages(userName):
         obj = each.to_dict()
         temp['by'] = obj['by']
         temp['subject'] = obj['subject']
+        temp['id'] = obj['id']
         context.append(temp)
     return context
 
@@ -176,8 +179,27 @@ def outgoingMessages(userName):
         obj = each.to_dict()
         temp['to'] = obj['to']
         temp['subject'] = obj['subject']
+        temp['id'] = obj['id']
         context.append(temp)
     return context
+
+def seeMessage(request,id,type):
+    connection()
+    myDB = firestore.client()
+    if type == "inbox":
+        myData = myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
+    else:
+        myData = myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
+    myObject = list(myData)[0].to_dict()
+    msg = myObject['message']
+    myKey = myDB.collection('privateKeys').document(request.user.username).get()
+    privateKey = myKey.to_dict()['privateKey']
+    decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
+    newMsg = decryptor.decrypt(msg)
+    newMsg = newMsg.decode('utf-8')
+    # return HttpResponse(newMsg)
+    messages.info(request,str(newMsg))
+    return redirect('home')
 
 def logoutUser(request):
     logout(request)
@@ -185,36 +207,4 @@ def logoutUser(request):
 #################################################################
 #Testing
 #################################################################
-def test(request):
-    if request.method == "POST":
-        sender = request.POST['send']
-        message = request.POST['message']
-        reciv = request.POST['recv']
-        # messageContent = {
-        #     'message':message,
-        # }
-        connection()
-        myDB = firestore.client()
-        #encryption
-        myData = myDB.collection('usersDB').document(reciv).get()
-        publicKey = myData.to_dict()['publicKey']
-        message = bytes(message,'utf-8')
-        encryptor = PKCS1_OAEP.new(RSA.import_key(publicKey))
-        encrypted = encryptor.encrypt(message)
-        messageContent = {
-            'message':encrypted,
-        }
-        myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
-        myDB.collection('usersDB').document(reciv).collection('inbox').add(messageContent)
-    return render(request,'user/message.html')
 
-def test1(request):
-    connection()
-    myDB = firestore.client()
-    myData = myDB.collection('usersDB').document('mclovin').collection('inbox').document('ZltdespKEV6iuuFYDjuD').get()
-    msg = myData.to_dict()['message']
-    myKey = myDB.collection('privateKeys').document('mclovin').get()
-    privateKey = myKey.to_dict()['privateKey']
-    decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
-    newMsg = decryptor.decrypt(msg)
-    return HttpResponse(newMsg)

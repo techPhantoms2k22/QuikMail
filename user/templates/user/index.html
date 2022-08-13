@@ -305,7 +305,7 @@
         <div id="inbox" class="tabcontent">
             <div class="list-group">
                 {% for message in incoming %}
-                <a href="#" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
+                <a href="{% url 'message' message.id %}" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -315,57 +315,6 @@
                 {% for message in outgoing %}
                 <a href="#" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
-                <!-- <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Lorem ipsum</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Lorem ipsum</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Surjo Bhattacharyya</b>&emsp; : Dapibus ac
-                    facilisis
-                    in</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Rajdip Seth</b>&emsp; : Morbi leo
-                    risus</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manideep Tarafdar</b>&emsp; : Porta ac
-                    consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action"><b>Manosij Roy</b>&emsp; : Vestibulum at
-                    eros</a> -->
             </div>
         </div>
     </div>
@@ -433,6 +382,10 @@
                         width: "500px",
                         // footer: '<a href="{% url "home" %}">Try Again!</a>'
                     })
+        </script>
+        {% elif message.level == 20 %}
+        <script>
+            Swal.fire("{{message}}")
         </script>
         {% else %}
         <script>
