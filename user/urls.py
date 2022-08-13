@@ -6,6 +6,7 @@ urlpatterns = [
     path('',views.home,name='home'),
     path("logout/", views.logoutUser, name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
-    path("message/<str:id>", views.seeMessage, name="message"),
+    path("inbox/<str:id>/", views.seeInbox, name="seeInbox"),
+    path("outbox/<str:id>/", views.seeOutbox, name="seeOutbox"),   
     #Test
 ]
