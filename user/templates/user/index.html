@@ -305,7 +305,7 @@
         <div id="inbox" class="tabcontent">
             <div class="list-group">
                 {% for message in incoming %}
-                <a href="{% url 'message' message.id %}" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
+                <a href="{% url 'seeInbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -313,7 +313,7 @@
         <div id="outbox" class="tabcontent">
             <div class="list-group">
                 {% for message in outgoing %}
-                <a href="#" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
+                <a href="{% url 'seeOutbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
             </div>
         </div>

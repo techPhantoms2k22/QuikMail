@@ -40,10 +40,18 @@ def insertKey(username,publicKey):
         'publicKey':publicKey,
     }
     welcomeMessage = {
+        'id':DT.now().strftime('%y%m%d%H%M%S%f'),
+        'timeStamp':SERVER_TIMESTAMP,
+        'subject':'Welcome',
         'message':'Welcome to QuikMail',
     }
     myDB.collection('usersDB').document(username).set(data)
+    welcomeMessage['by']='TeamTechPhantoms'
     myDB.collection('usersDB').document(username).collection('inbox').add(welcomeMessage)
+    del welcomeMessage['by']
+    del welcomeMessage['id']
+    del welcomeMessage['timeStamp']
+    del welcomeMessage['subject']
     myDB.collection('usersDB').document(username).collection('outbox').add(welcomeMessage)
 
 def privateKey(username,private_key):
@@ -129,18 +137,39 @@ def dashboard(request):
         message = bytes(message,'utf-8')
         encryptor = PKCS1_OAEP.new(RSA.import_key(publicKey))
         encrypted = encryptor.encrypt(message)
+        sender = request.user.username
+        senderData=myDB.collection('usersDB').document(sender).get()
+        send_publicKey = senderData.to_dict()['publicKey']
+        send_encryptor = PKCS1_OAEP.new(RSA.import_key(send_publicKey))
+        send_encrypted = send_encryptor.encrypt(message)
         messageContent = {
             'id':DT.now().strftime('%y%m%d%H%M%S%f'),
             'timeStamp':SERVER_TIMESTAMP,
             'subject':subject,
             'message':encrypted,
+            # 'sendMessage':send_encrypted,
         }
-        sender = request.user.username
+        # sender = request.user.username
+        # senderData=myDB.collection('usersDB').document(sender).get()
+        # send_publicKey = myData.to_dict()['publicKey']
+        # send_encryptor = PKCS1_OAEP.new(RSA.import_key(send_publicKey))
+        # send_encrypted = send_encryptor.encrypt(message)
+        # sendMessageContent = {
+        #     'id':DT.now().strftime('%y%m%d%H%M%S%f'),
+        #     'timeStamp':SERVER_TIMESTAMP,
+        #     'subject':subject,
+        #     'message':send_encrypted,
+        # }
+        messageContent['by'] = sender
+        myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
+        del messageContent['by']
+        del messageContent['message']
+        messageContent['message']=send_encrypted
         messageContent['to'] = reciever
         myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
         del messageContent['to']
-        messageContent['by'] = sender
-        myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
+        # messageContent['by'] = sender
+        # myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
         messages.success(request,"Message Successfully Sent.")
         return redirect('home')
     incoming = incomingMessages(request.user.username)
@@ -183,24 +212,44 @@ def outgoingMessages(userName):
         context.append(temp)
     return context
 
-def seeMessage(request,id,type):
+def seeInbox(request,id):
+    # print("ID IS ::",id)
+    #test
     connection()
     myDB = firestore.client()
-    if type == "inbox":
-        myData = myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
-    else:
-        myData = myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
+    myData = myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
     myObject = list(myData)[0].to_dict()
     msg = myObject['message']
     myKey = myDB.collection('privateKeys').document(request.user.username).get()
     privateKey = myKey.to_dict()['privateKey']
     decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
-    newMsg = decryptor.decrypt(msg)
-    newMsg = newMsg.decode('utf-8')
-    # return HttpResponse(newMsg)
-    messages.info(request,str(newMsg))
+    try:
+        newMsg = decryptor.decrypt(msg)
+        newMsg = newMsg.decode('utf-8')
+        # return HttpResponse(newMsg)
+        messages.info(request,str(newMsg))
+    except:
+        messages.info(request,msg)
     return redirect('home')
 
+def seeOutbox(request,id):
+    connection()
+    myDB= firestore.client()
+    myData=myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
+    myObject= list(myData)[0].to_dict()
+    msg=myObject['message']
+    myKey=myDB.collection('privateKeys').document(request.user.username).get()
+    privateKey = myKey.to_dict()['privateKey']
+    decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
+    try:
+        newMsg = decryptor.decrypt(msg)
+        newMsg = newMsg.decode('utf-8')
+        # return HttpResponse(newMsg)
+        messages.info(request,str(newMsg))
+    except:
+        messages.info(request,msg)
+    return redirect('home')
+    
 def logoutUser(request):
     logout(request)
     return redirect('home')
