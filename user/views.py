@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime as DT
 def csrf_failure(request,reason="Error Loading"):
     return redirect('home')
+from django.utils.safestring import mark_safe
 # from sastaMail.settings import USERNAME
 # Create your views here.
 #################################################################
@@ -226,7 +227,7 @@ def seeInbox(request,id):
     try:
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
-        messages.info(request,str(newMsg))
+        messages.info(request,mark_safe(newMsg))
     except:
         messages.info(request,msg)
     return redirect('home')
@@ -246,7 +247,6 @@ def seeOutbox(request,id):
         messages.warning(request,newMsg)
     except:
         messages.warning(request,msg)
-    # print(newMsg)
     return redirect('home')
     
 def logoutUser(request):

@@ -296,7 +296,7 @@
 
     <!-- List of all mails Starts -->
     <div class="tab2">
-        <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.first_name}}</Label>
+        <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.username}}</Label>
         <button class="tablinks" onclick="openMail(event, 'outbox')" id="outboxOpen">Sent</button>
         <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
     </div>
@@ -312,9 +312,13 @@
 
         <div id="outbox" class="tabcontent">
             <div class="list-group">
+                {% if outgoing %}
                 {% for message in outgoing %}
                 <a href="{% url 'seeOutbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
+                {% else %}
+                <h1 style="color: white;text-align: center;">Outbox currently empty.</h1>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -386,7 +390,7 @@
         {% elif message.level == 20 %}
         <script>
             Swal.fire({
-                        text: "{{message}}",
+                        html: "{{message|linebreaks}}",
                         width: "500px",
                         // footer: '<a href="{% url "home" %}">Try Again!</a>'
                         confirmButtonColor:'#285664',
@@ -395,8 +399,9 @@
         </script>
         {% elif message.level == 30 %}
         <script>
+            let str = `{{message|linebreaksbr}}`
             Swal.fire({
-                        text: "{{message}}",
+                        html:str,
                         width: "500px",
                         // footer: '<a href="{% url "home" %}">Try Again!</a>'
                         confirmButtonColor:'#285664',
