@@ -226,7 +226,6 @@ def seeInbox(request,id):
     try:
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
-        # return HttpResponse(newMsg)
         messages.info(request,str(newMsg))
     except:
         messages.info(request,msg)
@@ -244,10 +243,10 @@ def seeOutbox(request,id):
     try:
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
-        # return HttpResponse(newMsg)
-        messages.info(request,str(newMsg))
+        messages.warning(request,newMsg)
     except:
-        messages.info(request,msg)
+        messages.warning(request,msg)
+    # print(newMsg)
     return redirect('home')
     
 def logoutUser(request):

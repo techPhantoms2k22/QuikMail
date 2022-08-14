@@ -297,7 +297,7 @@
     <!-- List of all mails Starts -->
     <div class="tab2">
         <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.first_name}}</Label>
-        <button class="tablinks" onclick="openMail(event, 'outbox')">Sent</button>
+        <button class="tablinks" onclick="openMail(event, 'outbox')" id="outboxOpen">Sent</button>
         <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
     </div>
 
@@ -385,7 +385,26 @@
         </script>
         {% elif message.level == 20 %}
         <script>
-            Swal.fire("{{message}}")
+            Swal.fire({
+                        text: "{{message}}",
+                        width: "500px",
+                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
+                        confirmButtonColor:'#285664',
+                        confirmButtonText:'Close',
+                    })
+        </script>
+        {% elif message.level == 30 %}
+        <script>
+            Swal.fire({
+                        text: "{{message}}",
+                        width: "500px",
+                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
+                        confirmButtonColor:'#285664',
+                        confirmButtonText:'Close',
+                    })
+        </script>
+        <script>
+            document.getElementById("outboxOpen").click();
         </script>
         {% else %}
         <script>
