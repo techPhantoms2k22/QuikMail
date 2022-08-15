@@ -3,7 +3,7 @@
 
 
 ## Initial Release
-- August 01 , 2022
+- August 15 , 2022
 ```
 - Added Source Code
 - Added Readme 
