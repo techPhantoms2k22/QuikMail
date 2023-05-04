@@ -6,282 +6,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>QuikMail</title>
-    <style>
-        div.swal2-html-container{
-            /* background-color: black; */
-            /* font-family: Arial, Helvetica, sans-serif; */
-            font-size: large;
-            /* height: 100px; */
-        }
-        div.swal2-actions{
-            font-size: 15px;
-        }
-        :root {
-            --clr-neon: #429bb6;
-            --clr-dang: red;
-            --clr-sus: green;
-        }
 
-        body {
-            font-family: consolas;
-            background-color: #112b32;
-        }
-
-        .tab {
-            overflow: hidden;
-            border: 1px solid rgb(46, 46, 46);
-            background-color: #285664;
-            color: #000000;
-        }
-
-        .tab2 {
-            overflow: hidden;
-            border: 1px solid rgb(46, 46, 46);
-            background-color: #429bb6;
-            color: #eee;
-            height: 60px;
-        }
-
-        .tab button,
-        #reload:focus,
-        #quit:focus {
-            background-color: inherit;
-            outline: none;
-            float: right;
-            border-radius: 50%;
-            border-color: #285664;
-            outline: none;
-            cursor: pointer;
-            padding: 20px 22px;
-            transition: 0.3s;
-            font-size: 20px;
-            margin: 3px;
-            margin-right: 1.2em;
-        }
-
-        #reload:hover,
-        #quit:hover {
-            color: white;
-            outline: none;
-            box-shadow: 0px 0px 20px 20px var(--clr-neon);
-            background-color: var(--clr-neon);
-            border: none;
-        }
-
-        .tab2 button,
-        .tab2 label {
-            background-color: inherit;
-            float: left;
-            border-color: #285664;
-            outline: none;
-            cursor: pointer;
-            padding: 15px 17px;
-            transition: 0.3s;
-            font-size: 20px;
-        }
-
-        .tab2 button {
-            line-height: 15px;
-        }
-
-        .tab2 button:hover {
-            background-color: #ddd;
-            color: #285664;
-        }
-
-        .tab2 button.active {
-            background-color: #ccc;
-            color: #000000;
-        }
-
-        .tab img {
-            float: left;
-            object-fit: contain;
-            height: 70px;
-            margin-left: 5px;
-        }
-
-        .tab2 button {
-            background-color: inherit;
-            float: right;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 22px 70px;
-            transition: 0.3s;
-            font-size: 20px;
-        }
-
-        .list-group-item {
-            position: relative;
-            display: block;
-            padding: 20px 15px;
-            /* adjust here */
-            margin-bottom: 2px;
-            font-size: large;
-            background-color: rgb(223, 223, 223);
-            line-height: 1em
-                /* set to text height */
-        }
-
-        .container {
-            position: absolute;
-            max-height: 65%;
-            padding-top: 10px;
-            padding-bottom: 3%;
-            overflow-y: scroll;
-            overflow: auto;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -45%);
-        }
-
-        .fixed-bottom {
-            text-align: center;
-            margin-bottom: 2%;
-        }
-
-        #combtn,
-        #combtn:focus {
-            font-size: 25px;
-            padding: 0% 3%;
-            border: 3px solid #429bb6;
-            background-color: #ffffff00;
-            color: #fff;
-            border-radius: 20px;
-            background-color: #429bb6;
-        }
-
-        #combtn:active {
-            color: white;
-            outline: none;
-        }
-
-        .btn:hover,
-        #combtn:hover {
-            color: white;
-            outline: none;
-        }
-
-        #to,
-        #sub,
-        #msg {
-            padding: 1%;
-            margin: 1%;
-            font-size: 15px;
-        }
-
-        .swal-wide {
-            width: 40%;
-            height: 90%;
-        }
-
-        div.swal2-actions {
-            font-size: 15px;
-        }
-
-        .swal2-styled.swal2-confirm {
-            background-color: #429bb6;
-        }
-
-        .open-button {
-            background-color: #555;
-            color: white;
-            padding: 16px 20px;
-            border: none;
-            cursor: pointer;
-            opacity: 0.8;
-            position: fixed;
-            bottom: 23px;
-            right: 28px;
-            width: 280px;
-            font-size: 25px;
-            padding: 0% 3%;
-            background-color: #ffffff00;
-            border-radius: 20px;
-            background-color: #429bb6;
-            margin-right: 38%;
-          }
-          
-          /* The popup chat - hidden by default */
-          .chat-popup {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            right: 33%;
-            border: 3px solid #f1f1f1;
-            z-index: 9;
-          }
-          
-          /* Add styles to the form container */
-          .form-container {
-            max-width: 500px;
-            padding: 10px;
-            background-color: white;
-          }
-          
-          /* Full-width textarea */
-          .form-container textarea {
-            width: 100%;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            border: none;
-            background: #f1f1f1;
-            resize: none;
-            min-height: 200px;
-            font-size: large;
-          }
-
-          .form-container input {
-            width: 100%;
-            padding: 15px;
-            margin: 5px 0 2px 0;
-            border: none;
-            background: #f1f1f1;
-            resize: none;
-            min-height: 10px;
-            font-size: large;
-          }
-          
-          /* When the textarea gets focus, do something */
-          .form-container textarea:focus {
-            background-color: #ddd;
-            outline: none;
-          }
-          
-          /* Set a style for the submit/send button */
-          .form-container .btn {
-            background-color: #429bb6;
-            color: white;
-            padding: 16px 20px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom:10px;
-            opacity: 0.8;
-            font-size: large;
-          }
-          
-          /* Add a red background color to the cancel button */
-          .form-container .cancel {
-            background-color: #555;
-            font-size: large;
-          }
-          
-          /* Add some hover effects to buttons */
-          .form-container .btn:hover, .open-button:hover {
-            opacity: 1;
-          }
-    </style>
 </head>
 
 <body>
@@ -299,15 +37,17 @@
         <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.username}}</Label>
         <button class="tablinks" onclick="openMail(event, 'outbox')" id="outboxOpen">Sent</button>
         <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
+
     </div>
 
-    <div class="container vertical-scrollable">
+    <div class="container">
         <div id="inbox" class="tabcontent">
             <div class="list-group">
                 {% for message in incoming %}
                 <a href="{% url 'seeInbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
             </div>
+            <button class="open-button" onclick="openForm()">Compose</button>
         </div>
 
         <div id="outbox" class="tabcontent">
@@ -347,7 +87,7 @@
 
 
     <!-- Compose Starts -->
-    <button class="open-button" onclick="openForm()">Compose</button>
+
     <div class="chat-popup" id="myForm">
         <form action="" class="form-container" method="post">
             {% csrf_token %}
@@ -356,6 +96,10 @@
             <input type="text" name="to" placeholder="To" required/>
             <input type="text" name="sub" placeholder="Subject" required/>
             <textarea placeholder="Message" name="msg" required></textarea>
+            <div class="attach">
+                <i class="fa-solid fa-image" id="file-upload-btn"></i>
+                <input type="file" name="image" id="file-upload-input">
+            </div>
 
             <button type="submit" class="btn">Send</button>
             <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
@@ -363,6 +107,9 @@
     </div>
 
     <script>
+        $("#file-upload-btn").click(function(){
+            $("#file-upload-input").click();
+        })
         function openForm() {
             document.getElementById("myForm").style.display = "block";
         }

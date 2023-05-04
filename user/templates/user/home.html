@@ -3,77 +3,16 @@
 <html>
 
 <head>
+    <title>QuickMail</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
-
-    <style>
-        /* swal css */
-        div.swal2-html-container{
-            /* background-color: black; */
-            /* font-family: Arial, Helvetica, sans-serif; */
-            font-size: large;
-            /* height: 100px; */
-        }
-        div.swal2-actions{
-            font-size: 15px;
-        }
-        body {
-            font-family: consolas;
-            /* font-size: 10rem; */
-        }
-
-        .tab {
-            overflow: hidden;
-            border: 1px solid rgb(46, 46, 46);
-            background-color:#285664;
-            color:whitesmoke;
-        }
-
-        .tab button {
-            background-color: inherit;
-            float: right;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 22px 70px;
-            transition: 0.3s;
-            font-size: 20px;
-        }
-
-        .tab img {
-            float: left;
-            object-fit: contain;
-            height: 70px;
-            margin-left: 5px;
-        }
-
-        .tab button:hover {
-            background-color: whitesmoke;
-            color: #000040;
-        }
-
-        .tab button.active {
-            background-color: #ccc;
-            color: #000040;
-        }
-
-        .tabcontent {
-            display: none;
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-top: none;
-            background-color: #112b32;
-        }
-    </style>
 </head>
 <body>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -136,38 +75,7 @@
                 </div>
             </div>
         </div>
-        <script>
-            $(document).ready(function () {
-
-                $('#captch_form').on('submit', function (event) {
-                    var uname = $("#uname").val();
-                    if (uname == '') {
-                        $("#uname_error").html("Please Enter Username");
-                        $("#uname_error").show();
-                        $("#uname").css("border-color", "red");
-                        return false;
-                    }
-                    var psw = $("#password").val();
-                    var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
-                    if (psw == '') {
-                        $("#pass_error").html("Please enter valid password");
-                        $("#pass_error").show();
-                        $("#password").css("border-color", "red");
-                        return false;
-                    }
-                });
-
-                $("#uname").focus(function (e) {
-                    $("#uname_error").hide();
-                    $("#uname").css("border-color", "");
-                });
-                $("#password").focus(function (e) {
-                    $("#pass_error").hide();
-                    $("#password").css("border-color", "");
-                });
-
-            });
-        </script>
+        <script src="{% static 'js/login.js' %}"></script>
     </div>
 
     <div id="signUp" class="tabcontent">
@@ -234,71 +142,7 @@
                 </form>
             </div>
         </div>
-        <script type="text/javascript">
-            $(document).ready(function (e) {
-                $("#btn_register").click(function (e) {
-                    var uID = $("#uID").val();
-                    if (uID == '') {
-                        $("#uID_error").html("Please enter User Name");
-                        $("#uID_error").show();
-                        $("#uID").css("border-color", "red");
-                        return false;
-                    }
-                    var fname = $("#fname").val();
-                    if (fname == '') {
-                        $("#fname_error").html("Please enter First Name");
-                        $("#fname_error").show();
-                        $("#fname").css("border-color", "red");
-                        return false;
-                    }
-                    var lname = $("#lname").val();
-                    if (lname == '') {
-                        $("#lname_error").html("Please enter Last Name");
-                        $("#lname_error").show();
-                        $("#lname").css("border-color", "red");
-                        return false;
-                    }
-
-                    var psw = $("#psw").val();
-                    var psw_repeat = $("#psw_repeat").val();
-                    var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
-                    if (psw == "") {
-                        $("#p1_error").html("Enter Password");
-                        $("#p1_error").show();
-                        $("#psw").css("border-color", "red");
-                        return false;
-                    }
-                    if ($("#psw").val() != $("#psw_repeat").val()) {
-                        $("#p_error").html("Passwords do not match");
-                        $("#p_error").show();
-                        $("#psw_repeat").css("border-color", "red");
-                        return false;
-                    }
-                });
-                $("#uID").focus(function (e) {
-                    $("#uID_error").hide();
-                    $("#uID").css("border-color", "");
-                });
-                $("#fname").focus(function (e) {
-                    $("#fname_error").hide();
-                    $("#fname").css("border-color", "");
-                });
-                $("#lname").focus(function (e) {
-                    $("#lname_error").hide();
-                    $("#lname").css("border-color", "");
-                });
-
-                $("#psw_repeat").focus(function (e) {
-                    $("#p_error").hide();
-                    $("#psw_repeat").css("border-color", "");
-                });
-                $("#psw").focus(function (e) {
-                    $("#p1_error").hide();
-                    $("#psw").css("border-color", "");
-                });
-
-            });
-        </script>
+        <script src="{% static 'js/register.js' %}"></script>
     </div>
     </div>
 
@@ -331,31 +175,34 @@
                             <li><a href="#">Surjo Seth</a></li>
                             <li><a href="#">Manideep Bhattacharyya</a></li>
                             <li><a href="#">Rajdip Roy</a></li>
+                            <li><a href="">Tapanayan Banerjee</a></li>
                         </ul>
                     </div>
                     <div class="col-sm-4 col-md-3 item">
                         <h3>Tech Used</h3>
                         <ul>
-                            <li><a href="#">Django</a></li>
-                            <li><a href="#">HTML</a></li>
-                            <li><a href="#">CSS/Bootstrap</a></li>
-                            <li><a href="#">Python</a></li>
-                            <li><a href="#">Firebase</a></li>
+                            <li><a href="https://www.djangoproject.com/">Django</a></li>
+                            <li><a href="https://html.com/">HTML</a></li>
+                            <li><a href="https://www.w3.org/Style/CSS/Overview.en.html">CSS/Bootstrap</a></li>
+                            <li><a href="https://www.python.org/">Python</a></li>
+                            <li><a href="https://firebase.google.com/">Firebase</a></li>
                         </ul>
                     </div>
                     <div class="col-sm-4 col-md-3 item">
                         <h3>Contact Us</h3>
                         <ul>
-                            <li><a href="#">manosijindia@gmail.com</a></li>
-                            <li><a href="#">0123.surjo@gmail.com</a></li>
-                            <li><a href="#">manideepbhattacharyya2002@gmail.com</a></li>
-                            <li><a href="#">rajdiproy755@gmail.com</a></li>
+                            <li><a href="mailto:manosijindia@gmail.com">manosijindia@gmail.com</a></li>
+                            <li><a href="mailto:0123.surjo@gmail.com">0123.surjo@gmail.com</a></li>
+                            <li><a href="mailto:manideepbhattacharyya2002@gmail.com">manideepbhattacharyya2002@gmail.com</a></li>
+                            <li><a href="mailto:rajdiproy755@gmail.com">rajdiproy755@gmail.com</a></li>
+                            <li><a href="mailto:Tapanayan.banerjee27@gmail.com">Tapanayan.banerjee27@gmail.com</a></li>
                         </ul>
                     </div>
-                    <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a
-                            href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i
-                                class="icon ion-social-snapchat"></i></a><a href="#"><i
-                                class="icon ion-social-instagram"></i></a>
+                    <div class="col-lg-3 item social">
+                        <a href="#"><i class="icon ion-social-facebook"></i></a>
+                        <a href="#"><i class="icon ion-social-twitter"></i></a>
+                        <a href="#"><i class="icon ion-social-snapchat"></i></a>
+                        <a href="#"><i class="icon ion-social-instagram"></i></a>
                         <p class="copyright">TechPhantoms © 2022</p>
                     </div>
                 </div>
