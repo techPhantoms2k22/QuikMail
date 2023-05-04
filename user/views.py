@@ -28,7 +28,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin.firestore import SERVER_TIMESTAMP
-def connection():
+import pyrebase
+def firebaseDatabaseConnection():
     cred = credentials.Certificate("user/serviceAccountKey.json")
     try:
         firebase_admin.initialize_app(cred)
@@ -36,8 +37,23 @@ def connection():
     except:
         firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S%f'))
 
+from . import storageCredentials
+def firebaseStorageConnection():
+    firebaseConfigdefault = {
+                        'apiKey': storageCredentials.apiKey,
+                        'authDomain': storageCredentials.authDomain,
+                        'projectId': storageCredentials.projectId,
+                        'storageBucket': storageCredentials.storageBucket,
+                        'messagingSenderId': storageCredentials.messagingSenderId,
+                        'databaseURL' : storageCredentials.databaseURL,
+                        'appId': storageCredentials.appId,
+                        'measurementId': storageCredentials.measurementId,
+    }
+    firebaseConnection = pyrebase.initialize_app(firebaseConfigdefault)
+    return firebaseConnection
+
 def insertKey(username,publicKey):
-    connection()
+    firebaseDatabaseConnection()
     myDB = firestore.client()
     data = {
         'publicKey':publicKey,
@@ -58,7 +74,7 @@ def insertKey(username,publicKey):
     myDB.collection('usersDB').document(username).collection('outbox').add(welcomeMessage)
 
 def privateKey(username,private_key):
-    connection()
+    firebaseDatabaseConnection()
     myDB = firestore.client()
     key = {
         'privateKey':private_key,
@@ -126,8 +142,9 @@ def dashboard(request):
         reciever = request.POST['to']
         subject = request.POST['sub']
         message = request.POST['msg']
+        images = request.FILES.getlist('images')
         #Firebase Connection
-        connection()
+        firebaseDatabaseConnection()
         myDB = firestore.client()
         #Encryption
         myData = myDB.collection('usersDB').document(reciever).get()
@@ -170,8 +187,16 @@ def dashboard(request):
         messageContent['to'] = reciever
         myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
         del messageContent['to']
-        # messageContent['by'] = sender
-        # myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
+        #Sending attachment
+        firebaseStorageConnectionObject = firebaseStorageConnection().storage()
+        fileCount = 0
+        for image in images:
+            fileCount += 1
+            filename = messageContent['id'] + str(fileCount) + ".jpeg"
+            recieverPath = reciever + "/inbox/" + filename
+            senderPath = sender + '/outbox/' + filename
+            firebaseStorageConnectionObject.child(recieverPath).put(image)
+            firebaseStorageConnectionObject.child(senderPath).put(image)
         messages.success(request,"Message Successfully Sent.")
         return redirect('home')
     incoming = incomingMessages(request.user.username)
@@ -183,7 +208,7 @@ def dashboard(request):
     return render(request,'user/index.html',context)
 
 def incomingMessages(userName):
-    connection()
+    firebaseDatabaseConnection()
     myFireStore = firestore.client()
     queryObj = myFireStore.collection('usersDB').document(userName).collection('inbox')
     results = queryObj.order_by('timeStamp',direction = firestore.Query.DESCENDING)
@@ -199,7 +224,7 @@ def incomingMessages(userName):
     return context
 
 def outgoingMessages(userName):
-    connection()
+    firebaseDatabaseConnection()
     myFireStore = firestore.client()
     queryObj = myFireStore.collection('usersDB').document(userName).collection('outbox')
     results = queryObj.order_by('timeStamp',direction = firestore.Query.DESCENDING)
@@ -217,7 +242,7 @@ def outgoingMessages(userName):
 def seeInbox(request,id):
     # print("ID IS ::",id)
     #test
-    connection()
+    firebaseDatabaseConnection()
     myDB = firestore.client()
     myData = myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
     myObject = list(myData)[0].to_dict()
@@ -234,7 +259,7 @@ def seeInbox(request,id):
     return redirect('home')
 
 def seeOutbox(request,id):
-    connection()
+    firebaseDatabaseConnection()
     myDB= firestore.client()
     myData=myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
     myObject= list(myData)[0].to_dict()
