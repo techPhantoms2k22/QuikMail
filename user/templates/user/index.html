@@ -89,7 +89,7 @@
     <!-- Compose Starts -->
 
     <div class="chat-popup" id="myForm">
-        <form action="" class="form-container" method="post">
+        <form action="" class="form-container" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <h1><b>Compose</b></h1>
 
@@ -98,7 +98,7 @@
             <textarea placeholder="Message" name="msg" required></textarea>
             <div class="attach">
                 <i class="fa-solid fa-image" id="file-upload-btn"></i>
-                <input type="file" name="image" id="file-upload-input">
+                <input type="file" name="images" multiple id="file-upload-input">
             </div>
 
             <button type="submit" class="btn">Send</button>
