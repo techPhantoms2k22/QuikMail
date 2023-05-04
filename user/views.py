@@ -14,6 +14,8 @@ from django.contrib import messages
 from django.views.csrf import csrf_failure
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as DT
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP, PKCS1_v1_5
 def csrf_failure(request,reason="Error Loading"):
     return redirect('home')
 from django.utils.safestring import mark_safe
@@ -68,8 +70,7 @@ def privateKey(username,private_key):
 #################################################################
 #Cryptography
 #################################################################
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP ,PKCS1_v1_5
+
 import binascii
 
 def keyGen(username):
@@ -248,7 +249,7 @@ def seeOutbox(request,id):
     except:
         messages.warning(request,msg)
     return redirect('home')
-    
+
 def logoutUser(request):
     logout(request)
     return redirect('home')
