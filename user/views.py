@@ -193,8 +193,10 @@ def dashboard(request):
         for image in images:
             fileCount += 1
             filename = messageContent['id'] + str(fileCount) + ".jpeg"
-            path = reciever + "/inbox/" + filename
-            firebaseStorageConnectionObject.child(path).put(image)
+            recieverPath = reciever + "/inbox/" + filename
+            senderPath = sender + '/outbox/' + filename
+            firebaseStorageConnectionObject.child(recieverPath).put(image)
+            firebaseStorageConnectionObject.child(senderPath).put(image)
         messages.success(request,"Message Successfully Sent.")
         return redirect('home')
     incoming = incomingMessages(request.user.username)
