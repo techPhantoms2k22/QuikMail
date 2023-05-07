@@ -135,15 +135,29 @@
                     })
         </script>
         {% elif message.level == 20 %}
+        {% if 'noData' in message.tags %}
         <script>
+            console.log("No")
+            let inboxContent = `{{message|linebreaksbr}}`
             Swal.fire({
-                        html: "{{message|linebreaks}}",
+                        html: inboxContent,
                         width: "500px",
-                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
                         confirmButtonColor:'#285664',
                         confirmButtonText:'Close',
                     })
         </script>
+        {% else %}
+        <script>
+            let content = `{{message|linebreaksbr}}<br>
+                            <a href = "{% url 'attachmentContent' message.tags %}" > Attachment </a`
+            Swal.fire({
+                        html: content,
+                        width: "500px",
+                        confirmButtonColor:'#285664',
+                        confirmButtonText:'Close',
+                    })
+        </script>
+        {% endif %}
         {% elif message.level == 30 %}
         <script>
             let str = `{{message|linebreaksbr}}`

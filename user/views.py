@@ -143,6 +143,10 @@ def dashboard(request):
         subject = request.POST['sub']
         message = request.POST['msg']
         images = request.FILES.getlist('images')
+        if len(images) == 0:
+            attachment = False
+        else:
+            attachment = True
         #Firebase Connection
         firebaseDatabaseConnection()
         myDB = firestore.client()
@@ -161,42 +165,40 @@ def dashboard(request):
         send_publicKey = senderData.to_dict()['publicKey']
         send_encryptor = PKCS1_OAEP.new(RSA.import_key(send_publicKey))
         send_encrypted = send_encryptor.encrypt(message)
+
+        #Sending attachment
+        attachmentList = []
+        firebaseStorageConnectionObject = firebaseStorageConnection().storage()
+        fileCount = 0
+        for image in images:
+            fileCount += 1
+            filename = DT.now().strftime('%y%m%d%H%M%S%f') + str(fileCount) + ".jpeg"
+            # recieverPath = reciever + "/inbox/" + filename
+            # senderPath = sender + '/outbox/' + filename
+            # firebaseStorageConnectionObject.child(recieverPath).put(image)
+            # firebaseStorageConnectionObject.child(senderPath).put(image)
+            firebaseStorageConnectionObject.child(filename).put(image)
+            fileURL = firebaseStorageConnectionObject.child(filename).get_url(None)
+            attachmentList.append(fileURL)
+
         messageContent = {
             'id':DT.now().strftime('%y%m%d%H%M%S%f'),
             'timeStamp':SERVER_TIMESTAMP,
             'subject':subject,
             'message':encrypted,
+            'attachment':attachment,
+            'attachmentArray' : attachmentList,
             # 'sendMessage':send_encrypted,
         }
-        # sender = request.user.username
-        # senderData=myDB.collection('usersDB').document(sender).get()
-        # send_publicKey = myData.to_dict()['publicKey']
-        # send_encryptor = PKCS1_OAEP.new(RSA.import_key(send_publicKey))
-        # send_encrypted = send_encryptor.encrypt(message)
-        # sendMessageContent = {
-        #     'id':DT.now().strftime('%y%m%d%H%M%S%f'),
-        #     'timeStamp':SERVER_TIMESTAMP,
-        #     'subject':subject,
-        #     'message':send_encrypted,
-        # }
         messageContent['by'] = sender
         myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
         del messageContent['by']
         del messageContent['message']
         messageContent['message']=send_encrypted
         messageContent['to'] = reciever
+        # messageContent['attachmentArray'] = attachmentList
         myDB.collection('usersDB').document(sender).collection('outbox').add(messageContent)
         del messageContent['to']
-        #Sending attachment
-        firebaseStorageConnectionObject = firebaseStorageConnection().storage()
-        fileCount = 0
-        for image in images:
-            fileCount += 1
-            filename = messageContent['id'] + str(fileCount) + ".jpeg"
-            recieverPath = reciever + "/inbox/" + filename
-            senderPath = sender + '/outbox/' + filename
-            firebaseStorageConnectionObject.child(recieverPath).put(image)
-            firebaseStorageConnectionObject.child(senderPath).put(image)
         messages.success(request,"Message Successfully Sent.")
         return redirect('home')
     incoming = incomingMessages(request.user.username)
@@ -240,22 +242,28 @@ def outgoingMessages(userName):
     return context
 
 def seeInbox(request,id):
-    # print("ID IS ::",id)
-    #test
     firebaseDatabaseConnection()
     myDB = firestore.client()
     myData = myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
     myObject = list(myData)[0].to_dict()
     msg = myObject['message']
+    ifAttachment = False
+    try:
+        ifAttachment = myObject['attachment']
+    except:
+        pass
     myKey = myDB.collection('privateKeys').document(request.user.username).get()
     privateKey = myKey.to_dict()['privateKey']
     decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
     try:
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
-        messages.info(request,mark_safe(newMsg))
+        if ifAttachment is True:
+            messages.info(request,mark_safe(newMsg),extra_tags=id)
+        else:
+            messages.info(request,mark_safe(newMsg),extra_tags="noData")
     except:
-        messages.info(request,msg)
+        messages.info(request,msg,extra_tags="noData")
     return redirect('home')
 
 def seeOutbox(request,id):
@@ -280,5 +288,19 @@ def logoutUser(request):
     return redirect('home')
 #################################################################
 #Testing
+import requests
+def attachmentContentDownload(request,id):
+    id = id[:-5]
+    firebaseDatabaseConnection()
+    myDB= firestore.client()
+    myData=myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
+    myObject= list(myData)[0].to_dict()
+    attachments = myObject['attachmentArray']
+    for attachment in attachments:
+        response = HttpResponse(content_type = "image/png")
+        response['Content-Disposition'] = "attachment;filename=attachment.png"
+        response.write(requests.get(attachment).content)
+        return response
+    return redirect('home')
 #################################################################
 
