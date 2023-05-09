@@ -173,10 +173,6 @@ def dashboard(request):
         for image in images:
             fileCount += 1
             filename = DT.now().strftime('%y%m%d%H%M%S%f') + str(fileCount) + ".jpeg"
-            # recieverPath = reciever + "/inbox/" + filename
-            # senderPath = sender + '/outbox/' + filename
-            # firebaseStorageConnectionObject.child(recieverPath).put(image)
-            # firebaseStorageConnectionObject.child(senderPath).put(image)
             firebaseStorageConnectionObject.child(filename).put(image)
             fileURL = firebaseStorageConnectionObject.child(filename).get_url(None)
             attachmentList.append(fileURL)
