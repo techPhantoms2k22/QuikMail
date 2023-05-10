@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from datetime import datetime as dt
 import user
-from user.models import userDB
 from .forms import NewUserForm
 from django.contrib.auth import login , authenticate , logout
 from django.contrib.auth.decorators import login_required
@@ -15,10 +14,13 @@ from django.views.csrf import csrf_failure
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as DT
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import AES
 from Crypto.Cipher import PKCS1_OAEP, PKCS1_v1_5
 def csrf_failure(request,reason="Error Loading"):
     return redirect('home')
 from django.utils.safestring import mark_safe
+import os
+import base64
 # from sastaMail.settings import USERNAME
 # Create your views here.
 #################################################################
@@ -93,16 +95,12 @@ def keyGen(username):
     keyPair = RSA.generate(2048)
     pubKey = keyPair.publickey()
     keyPair = keyPair.exportKey()
-    # keyN = hex(pubKey.n)
-    # keyE = hex(pubKey.e)
-    # keyD = hex(keyPair.d)
-    # data = userDB(username=username,first_name=first_name,last_name=last_name,password=password)
-    # data.save()
     insertKey(username,pubKey.exportKey())
     privateKey(username,keyPair)
 #################################################################
 #End
 #################################################################
+from .models import userDatabase
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -121,6 +119,8 @@ def home(request):
                 user.last_name = lname
                 user.save()
                 keyGen(userid)
+                userData = userDatabase(username = userid , firstName = fname , lastName = lname)
+                userData.save()
                 messages.success(request,"Account Created")
         elif request.POST.get('uname'):
             userName = request.POST['uname']
@@ -136,13 +136,14 @@ def home(request):
     return render(request,'user/home.html')
 
 import json
+import re
 @login_required(login_url='home')
 def dashboard(request):
     if request.method == "POST":
         reciever = request.POST['to']
         subject = request.POST['sub']
         message = request.POST['msg']
-        images = request.FILES.getlist('images')
+        images = request.FILES.getlist('attachment')
         if len(images) == 0:
             attachment = False
         else:
@@ -170,21 +171,24 @@ def dashboard(request):
         attachmentList = []
         firebaseStorageConnectionObject = firebaseStorageConnection().storage()
         fileCount = 0
+        #For NO ATTACHMENT
+        extension = ""
         for image in images:
+            extension = re.findall("(\\.[^.]+)$", str(image))[0]
             fileCount += 1
-            filename = DT.now().strftime('%y%m%d%H%M%S%f') + str(fileCount) + ".jpeg"
+            filename = DT.now().strftime('%y%m%d%H%M%S%f') + str(fileCount) + extension
             firebaseStorageConnectionObject.child(filename).put(image)
             fileURL = firebaseStorageConnectionObject.child(filename).get_url(None)
             attachmentList.append(fileURL)
 
         messageContent = {
-            'id':DT.now().strftime('%y%m%d%H%M%S%f'),
-            'timeStamp':SERVER_TIMESTAMP,
-            'subject':subject,
-            'message':encrypted,
-            'attachment':attachment,
+            'id' : DT.now().strftime('%y%m%d%H%M%S%f'),
+            'timeStamp' : SERVER_TIMESTAMP,
+            'subject' : subject,
+            'message' : encrypted,
+            'attachment' : attachment,
             'attachmentArray' : attachmentList,
-            # 'sendMessage':send_encrypted,
+            'attachmentType':extension,
         }
         messageContent['by'] = sender
         myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
@@ -268,35 +272,60 @@ def seeOutbox(request,id):
     myData=myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
     myObject= list(myData)[0].to_dict()
     msg=myObject['message']
+
+    try:
+        attachmentURL = myObject['attachmentArray'][0]
+    except:
+        pass
+
+    ifAttachment = False
+    try:
+        ifAttachment = myObject['attachment']
+    except:
+        pass
     myKey=myDB.collection('privateKeys').document(request.user.username).get()
     privateKey = myKey.to_dict()['privateKey']
     decryptor = PKCS1_OAEP.new(RSA.import_key(privateKey))
     try:
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
-        messages.warning(request,newMsg)
+        if ifAttachment is True:
+            messages.warning(request,newMsg,extra_tags=attachmentURL)
+        else:
+            messages.warning(request,newMsg,extra_tags="noData")
     except:
-        messages.warning(request,msg)
+        messages.warning(request,msg,extra_tags="noData")
     return redirect('home')
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
+import requests
+def attachmentContentDownload_Inbox(request,id):
+    if request.method == "POST":
+        passCode = request.POST['secretcode']
+        if passCode == "HaPPy":
+            id = id[:-5]
+            firebaseDatabaseConnection()
+            myDB= firestore.client()
+            myData=myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
+            myObject= list(myData)[0].to_dict()
+            attachments = myObject['attachmentArray']
+            extension = myObject['attachmentType']
+            for attachment in attachments:
+                if extension == ".jpeg" or extension == ".jpg" or extension == ".png":
+                    response = HttpResponse(content_type = "image/png")
+                    response['Content-Disposition'] = "attachment;filename=attachment.png"
+                    response.write(requests.get(attachment).content)
+                elif extension == ".pdf":
+                    response = HttpResponse(content_type = "application/pdf")
+                    response['Content-Disposition'] = "attachment;filename=attachment.pdf"
+                    response.write(requests.get(attachment).content)
+                return response
+        else:
+            return HttpResponse("Password Wrong")
+    return render(request,'user/seeAttachment.html')
 #################################################################
 #Testing
-import requests
-def attachmentContentDownload(request,id):
-    id = id[:-5]
-    firebaseDatabaseConnection()
-    myDB= firestore.client()
-    myData=myDB.collection('usersDB').document(request.user.username).collection('inbox').where("id","==",id).get()
-    myObject= list(myData)[0].to_dict()
-    attachments = myObject['attachmentArray']
-    for attachment in attachments:
-        response = HttpResponse(content_type = "image/png")
-        response['Content-Disposition'] = "attachment;filename=attachment.png"
-        response.write(requests.get(attachment).content)
-        return response
-    return redirect('home')
 #################################################################
-

@@ -98,7 +98,7 @@
             <textarea placeholder="Message" name="msg" required></textarea>
             <div class="attach">
                 <i class="fa-solid fa-image" id="file-upload-btn"></i>
-                <input type="file" name="images" multiple id="file-upload-input">
+                <input type="file" name="attachment" multiple id="file-upload-input">
             </div>
 
             <button type="submit" class="btn">Send</button>
@@ -135,12 +135,34 @@
                     })
         </script>
         {% elif message.level == 20 %}
+            {% if 'noData' in message.tags %}
+            <script>
+                let inboxContent = `{{message|linebreaksbr}}`
+                Swal.fire({
+                            html: inboxContent,
+                            width: "500px",
+                            confirmButtonColor:'#285664',
+                            confirmButtonText:'Close',
+                        })
+            </script>
+            {% else %}
+            <script>
+                let content = `{{message|linebreaksbr}}<br>
+                                <a href = "{% url 'attachmentContent' message.tags %}" > Attachment </a`
+                Swal.fire({
+                            html: content,
+                            width: "500px",
+                            confirmButtonColor:'#285664',
+                            confirmButtonText:'Close',
+                        })
+            </script>
+            {% endif %}
+        {% elif message.level == 30 %}
         {% if 'noData' in message.tags %}
         <script>
-            console.log("No")
-            let inboxContent = `{{message|linebreaksbr}}`
+            let str = `{{message|linebreaksbr}}`
             Swal.fire({
-                        html: inboxContent,
+                        html:str,
                         width: "500px",
                         confirmButtonColor:'#285664',
                         confirmButtonText:'Close',
@@ -148,27 +170,16 @@
         </script>
         {% else %}
         <script>
-            let content = `{{message|linebreaksbr}}<br>
-                            <a href = "{% url 'attachmentContent' message.tags %}" > Attachment </a`
+            let attachmentstr = `{{message|linebreaksbr}}<br><a href = {{message.tags}} target = "_blank" > Attachment </a`
+            // console.log("Hello")
             Swal.fire({
-                        html: content,
+                        html:attachmentstr,
                         width: "500px",
                         confirmButtonColor:'#285664',
                         confirmButtonText:'Close',
                     })
         </script>
         {% endif %}
-        {% elif message.level == 30 %}
-        <script>
-            let str = `{{message|linebreaksbr}}`
-            Swal.fire({
-                        html:str,
-                        width: "500px",
-                        // footer: '<a href="{% url "home" %}">Try Again!</a>'
-                        confirmButtonColor:'#285664',
-                        confirmButtonText:'Close',
-                    })
-        </script>
         <script>
             document.getElementById("outboxOpen").click();
         </script>
