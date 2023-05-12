@@ -143,8 +143,9 @@ def dashboard(request):
         reciever = request.POST['to']
         subject = request.POST['sub']
         message = request.POST['msg']
-        images = request.FILES.getlist('attachment')
-        if len(images) == 0:
+        #Accept the files from frontend
+        files = request.FILES.getlist('attachment')
+        if len(files) == 0:
             attachment = False
         else:
             attachment = True
@@ -168,16 +169,18 @@ def dashboard(request):
         send_encrypted = send_encryptor.encrypt(message)
 
         #Sending attachment
-        attachmentList = []
+        attachmentList = [] # Keeping files list
+        typeList = [] # Keeping extension list
         firebaseStorageConnectionObject = firebaseStorageConnection().storage()
         fileCount = 0
         #For NO ATTACHMENT
         extension = ""
-        for image in images:
-            extension = re.findall("(\\.[^.]+)$", str(image))[0]
+        for file in files:
+            extension = re.findall("(\\.[^.]+)$", str(file))[0]
+            typeList.append(extension)
             fileCount += 1
             filename = DT.now().strftime('%y%m%d%H%M%S%f') + str(fileCount) + extension
-            firebaseStorageConnectionObject.child(filename).put(image)
+            firebaseStorageConnectionObject.child(filename).put(file)
             fileURL = firebaseStorageConnectionObject.child(filename).get_url(None)
             attachmentList.append(fileURL)
 
@@ -189,6 +192,7 @@ def dashboard(request):
             'attachment' : attachment,
             'attachmentArray' : attachmentList,
             'attachmentType':extension,
+            'extensionList':typeList,
         }
         messageContent['by'] = sender
         myDB.collection('usersDB').document(reciever).collection('inbox').add(messageContent)
@@ -303,9 +307,14 @@ def logoutUser(request):
 
 import requests
 def attachmentContentDownload_Inbox(request,id):
+    content = "hidden"
+    extensionList = []
+    contentArray = []
+    temporaryList = {}
     if request.method == "POST":
         passCode = request.POST['secretcode']
-        if passCode == "HaPPy":
+        if passCode == "happy":
+            content = "show"
             id = id[:-5]
             firebaseDatabaseConnection()
             myDB= firestore.client()
@@ -313,19 +322,22 @@ def attachmentContentDownload_Inbox(request,id):
             myObject= list(myData)[0].to_dict()
             attachments = myObject['attachmentArray']
             extension = myObject['attachmentType']
-            for attachment in attachments:
-                if extension == ".jpeg" or extension == ".jpg" or extension == ".png":
-                    response = HttpResponse(content_type = "image/png")
-                    response['Content-Disposition'] = "attachment;filename=attachment.png"
-                    response.write(requests.get(attachment).content)
-                elif extension == ".pdf":
-                    response = HttpResponse(content_type = "application/pdf")
-                    response['Content-Disposition'] = "attachment;filename=attachment.pdf"
-                    response.write(requests.get(attachment).content)
-                return response
+            try:
+                extensionList = myObject['extensionList']
+            except:
+                extensionList.append(extension)
+            for i in range(len(extensionList)):
+                temporaryList['extensionType'] = extensionList[i]
+                temporaryList['attachmentURL'] = attachments[i]
+                contentArray.append(temporaryList.copy())
+                temporaryList.clear()
         else:
             return HttpResponse("Password Wrong")
-    return render(request,'user/seeAttachment.html')
+    context = {
+        'content' : content,
+        'contentArray':contentArray,
+    }
+    return render(request,'user/seeAttachment.html',context)
 #################################################################
 #Testing
 #################################################################
