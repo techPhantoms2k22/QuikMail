@@ -2,8 +2,6 @@ from unittest import result
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from datetime import datetime as dt
-import user
-from .forms import NewUserForm
 from django.contrib.auth import login , authenticate , logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -14,15 +12,10 @@ from django.views.csrf import csrf_failure
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as DT
 from Crypto.PublicKey import RSA
-from Crypto.Cipher import AES
 from Crypto.Cipher import PKCS1_OAEP, PKCS1_v1_5
 def csrf_failure(request,reason="Error Loading"):
     return redirect('home')
 from django.utils.safestring import mark_safe
-import os
-import base64
-# from sastaMail.settings import USERNAME
-# Create your views here.
 #################################################################
 #Firebase Module
 #################################################################
@@ -31,16 +24,20 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin.firestore import SERVER_TIMESTAMP
 import pyrebase
+# Firebase NoSQL Database Connection Setup
 def firebaseDatabaseConnection():
+    # Creating a Access Certificate
     cred = credentials.Certificate("user/serviceAccountKey.json")
+    # Creating an instance
     try:
         firebase_admin.initialize_app(cred)
-        # firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S'))
     except:
         firebase_admin.initialize_app(cred,name=dt.now().strftime('%d%m%y%H%M%S%f'))
 
+# Firebase Storage Bucket Connection Setup
 from . import storageCredentials
 def firebaseStorageConnection():
+    # Creating Configurations
     firebaseConfigdefault = {
                         'apiKey': storageCredentials.apiKey,
                         'authDomain': storageCredentials.authDomain,
@@ -51,6 +48,7 @@ def firebaseStorageConnection():
                         'appId': storageCredentials.appId,
                         'measurementId': storageCredentials.measurementId,
     }
+    # Setting up the connection
     firebaseConnection = pyrebase.initialize_app(firebaseConfigdefault)
     return firebaseConnection
 
@@ -305,7 +303,6 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
-import requests
 def attachmentContentDownload_Inbox(request,id):
     content = "hidden"
     extensionList = []
