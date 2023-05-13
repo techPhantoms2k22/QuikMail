@@ -60,6 +60,7 @@
                 <h1 style="color: white;text-align: center;">Outbox currently empty.</h1>
                 {% endif %}
             </div>
+            <button class="open-button" onclick="openForm()">Compose</button>
         </div>
     </div>
 
@@ -109,7 +110,18 @@
     <script>
         $("#file-upload-btn").click(function(){
             $("#file-upload-input").click();
-        })
+        });
+        $("#file-upload-input").change(function () {
+            var name = $(this).val();
+            if (name)
+            {
+                $("#file-upload-btn").css("color","#285664");
+            }
+            else
+            {
+                $("#file-upload-btn").css("color","#429bb6");
+            }
+        });
         function openForm() {
             document.getElementById("myForm").style.display = "block";
         }

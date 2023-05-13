@@ -127,7 +127,7 @@ body {
   transform: translate(-50%, -40%);
 }
 .list-group {
-  height: 500px;
+  max-height: 500px;
   overflow-y: auto;
 }
 .list-group::-webkit-scrollbar-track {
@@ -298,4 +298,9 @@ div.swal2-actions {
 #file-upload-btn {
   font-size: 50px;
   color: #429bb6;
+  opacity: 0.8;
+}
+
+#file-upload-btn:hover{
+  opacity: 1;;
 }
