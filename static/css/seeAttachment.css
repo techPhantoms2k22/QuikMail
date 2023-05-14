@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap");
+
+.body {
+    font-family: "Kanit", sans-serif;
+    background-color: #000000;
+}
+
+.grad {
+    background: radial-gradient(
+      circle,
+      rgba(104, 163, 233, 1) 28%,
+      rgba(237, 12, 225, 1) 100%
+    );
+  }
+
+  .tabcontent .container {
+    width: 50%;
+    padding: 50px 0px;
+  }
+
+  .panel {
+    background: white;
+    padding: 20px;
+    border-radius: 20px 30px;
+  }
+
+  .panel-heading {
+    font-size: 30px;
+    border-radius: 10px;
+    padding: 15px 0px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: whitesmoke;
+  }
+
+  th {
+    border-radius: 10px;
+  }
+
+  .panel-heading h2 {
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  .panel-body {
+    background-color: transparent;
+  }
+
+  .form-control {
+    font-size: 20px;
+  }
+
+  .grad-btn {
+    background: rgb(18, 114, 230);
+    background: linear-gradient(
+      23deg,
+      rgba(18, 114, 230, 1) 20%,
+      rgba(10, 231, 236, 1) 100%
+    );
+  }
+  .open-button {
+    text-align: center;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 1;
+    width: 280px;
+    font-size: 25px;
+    border-radius: 20px;
+    background-color: #429bb6;
+    margin: 10px auto;
+    transition: ease-in 0.9ms;
+  }
+
+#attachment {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    /* background: radial-gradient(
+        circle,
+        rgba(104, 163, 233, 1) 28%,
+        rgba(237, 12, 225, 1) 100%
+      );;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; */
+}
+
+#table {
+    text-align: center;
+}
+
+#pass {
+    text-align: center;
+}
