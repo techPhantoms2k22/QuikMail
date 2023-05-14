@@ -1,6 +1,5 @@
 /* swal css */
-
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 div.swal2-html-container {
   /* background-color: black; */
   /* font-family: Arial, Helvetica, sans-serif; */
@@ -11,10 +10,30 @@ div.swal2-actions {
   font-size: 15px;
 }
 body {
-  font-family: 'Kanit', sans-serif;
+  font-family: "Montserrat", sans-serif;
   /* font-size: 10rem; */
 }
 
+.tabcontent .container {
+  width: 50%;
+  padding: 50px 0px;
+}
+.grad {
+  background: radial-gradient(
+    circle,
+    rgba(104, 163, 233, 1) 28%,
+    rgba(237, 12, 225, 1) 100%
+  );
+}
+
+.grad-btn {
+  background: rgb(18, 114, 230);
+  background: linear-gradient(
+    23deg,
+    rgba(18, 114, 230, 1) 20%,
+    rgba(10, 231, 236, 1) 100%
+  );
+}
 .tab {
   overflow: hidden;
   border: 1px solid rgb(46, 46, 46);
@@ -23,7 +42,7 @@ body {
 }
 
 .tab button {
-  background-color: inherit;
+  background-color: transparent;
   float: right;
   border: none;
   outline: none;
@@ -46,14 +65,73 @@ body {
 }
 
 .tab button.active {
-  background-color: #ccc;
-  color: #000040;
+  background-color: black;
+  color: whitesmoke;
 }
 
 .tabcontent {
   display: none;
   padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-  background-color: #112b32;
+  background-color: black;
 }
+
+.phone-number {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#std {
+  width: 15%;
+  padding: 5px;
+  text-align: center;
+}
+
+.panel {
+  background: white;
+  padding: 20px;
+  border-radius: 20px 30px;
+}
+
+.panel-body {
+  background-color: transparent;
+}
+.panel-heading {
+  border-radius: 10px;
+  padding: 15px 0px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: whitesmoke;
+}
+
+.panel-heading h2 {
+  font-size: 40px;
+  font-weight: bold;
+}
+.btn-div {
+  text-align: center;
+}
+
+.btn {
+  width: 50%;
+  padding: 10px;
+  margin: 10px;
+  font-size: 25px;
+  border: none;
+  box-shadow: 5px 4px 11px 3px #a8daebe3;
+  border-radius: 20px;
+  transition: ease 0.9ms;
+}
+
+.btn:hover {
+  width: 60%;
+}
+.form-group label {
+  color: rgb(17 132 231);
+  font-size: 20px;
+}
+
+.form-control {
+  font-size: 20px;
+}
+

@@ -25,29 +25,30 @@
 <body>
 
     <!-- Nav bar Starts -->
-    <div class="tab">
-        <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" style="filter: invert(1);" />
+    <div class="tab grad">
+        <img src="{% static 'images/QuikMail1.png' %}" alt="" style="filter: invert(1);" />
         <a href="{% url 'logout' %}"><button class="fa btn btn-primary btn-circle btn-sm" id="reload"><i class="fa fa-power-off" aria-hidden="true"></i></button></a>
         <button class="fa btn btn-primary btn-circle btn-sm" id="quit" onClick="window.location.href=window.location.href">&#xf021;</button>
     </div>
     <!-- Nav bar Ends -->
 
     <!-- List of all mails Starts -->
-    <div class="tab2">
-        <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.username}}</Label>
-        <button class="tablinks" onclick="openMail(event, 'outbox')" id="outboxOpen">Sent</button>
-        <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
 
-    </div>
 
     <div class="container">
+        <div class="tab2 grad">
+            <Label><i class="fa fa-user" aria-hidden="true"></i> Welcome, {{request.user.username}}</Label>
+            <button class="tablinks" onclick="openMail(event, 'outbox')" id="outboxOpen">Sent</button>
+            <button class="tablinks" onclick="openMail(event, 'inbox')" id="defaultOpen">Inbox</button>
+        </div>
+
         <div id="inbox" class="tabcontent">
             <div class="list-group">
                 {% for message in incoming %}
                 <a href="{% url 'seeInbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.by}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
             </div>
-            <button class="open-button" onclick="openForm()">Compose</button>
+            <button class="open-button grad-btn" onclick="openForm()">Compose</button>
         </div>
 
         <div id="outbox" class="tabcontent">
@@ -57,9 +58,10 @@
                 <a href="{% url 'seeOutbox' message.id %}" class="list-group-item list-group-item-action"><b>{{message.to}}</b>&emsp;{{message.subject}}</a>
                 {% endfor %}
                 {% else %}
-                <h1 style="color: white;text-align: center;">Outbox currently empty.</h1>
+                <h1>Outbox currently empty.</h1>
                 {% endif %}
             </div>
+            <button class="open-button grad-btn" onclick="openForm()">Compose</button>
         </div>
     </div>
 
@@ -109,7 +111,18 @@
     <script>
         $("#file-upload-btn").click(function(){
             $("#file-upload-input").click();
-        })
+        });
+        $("#file-upload-input").change(function () {
+            var name = $(this).val();
+            if (name)
+            {
+                $("#file-upload-btn").css("color","#285664");
+            }
+            else
+            {
+                $("#file-upload-btn").css("color","#429bb6");
+            }
+        });
         function openForm() {
             document.getElementById("myForm").style.display = "block";
         }
