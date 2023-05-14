@@ -42,20 +42,19 @@
         </script>
         {% endif %}
     {% endfor %}
-    <div class="tab">
+    <div class="tab grad">
         <img src="{% static 'images/QuikMail1.png' %}" alt="Image aschena ki korbo ?" style="filter: invert(1);" />
         <button class="tablinks" onclick="openHome(event, 'signIn')" id="defaultOpen">Sign-In</button>
         <button class="tablinks" onclick="openHome(event, 'signUp')">Sign-Up</button>
     </div>
 
     <div id="signIn" class="tabcontent">
-        <div class="container" style="width: 50%">
-            <br />
+        <div class="container">
             <div class="panel panel-default">
-                <div class="panel-heading" style="text-align :center; background-color:#285664; color:white">
+                <div class="panel-heading grad">
                     <h2>Sign-In</h2>
                 </div>
-                <div class="panel-body" style="background-color:#ccc;">
+                <div class="panel-body">
                     <form action="" method="post" id="captch_form">
                         {% csrf_token %}
                         <div class="form-group">
@@ -69,7 +68,7 @@
                                 placeholder="Password" /><span id="pass_error"></span>
                         </div><br>
                         <div class="form-group" style="text-align: center; margin-top: 2%">
-                            <input type="submit" name="register" id="register" class="btn btn-primary" value="LOG IN" style="background-color: #285664;"/>
+                            <input type="submit" name="register" id="register" class="btn btn-primary grad-btn" value="LOG IN" style="background-color: #285664;"/>
                         </div>
                     </form>
                 </div>
@@ -79,13 +78,12 @@
     </div>
 
     <div id="signUp" class="tabcontent">
-        <div class="container" style="width:50%">
-            <br />
+        <div class="container">
             <div class="panel panel-default">
-                <div class="panel-heading" style="text-align :center; background-color:#285664; color:white">
+                <div class="panel-heading grad">
                     <h2>Sign-Up</h2>
                 </div>
-                <div class="panel-body" style="background-color:#ccc;">
+                <div class="panel-body">
                     <form action="" method="post" id="reg_form">
                         {% csrf_token %}
                         <div class="form-group">
@@ -113,12 +111,33 @@
 
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-md-6"><label><b>Password<span>*</span></b></label>
+                                <div class="col-md-6">
+                                    <label>Date of Birth<span>*</span></label>
+                                    <input type="date" name="dob" id="dob" class="form-control"
+                                        placeholder="dd/mm/yyyy" />
+                                    <span id="dob_error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Phone Number<span>*</span></label>
+                                    <div class="phone-number">
+                                        <input type="text" name="" id="std" value="+91" class="form-control" disabled>
+                                        <input type="text" name="phone" id="phone" class="form-control"
+                                        placeholder="Phone Number" />
+                                    </div>
+                                    <span id="phone_error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6"><label>Password *</label>
                                     <input type="password" placeholder="Enter Password" name="psw" id="psw"
                                         class="form-control">
                                     <span id="p1_error"></span>
                                 </div>
-                                <div class="col-md-6"><label><b>Confirm Password<span>*</span></b></label>
+                                <div class="col-md-6"><label>Confirm Password *</b></label>
                                     <input type="password" placeholder="Confirm Password" name="psw-repeat"
                                         id="psw_repeat" class="form-control">
                                     <span id="p_error"></span>
@@ -128,12 +147,12 @@
 
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-md-6" style="text-align: right;">
-                                    <input type="submit" name="btn_register" id="btn_register" class="btn btn-primary"
+                                <div class="col-md-6 btn-div">
+                                    <input type="submit" name="btn_register" id="btn_register" class="btn btn-primary grad-btn"
                                         value="Register" style="background-color: #285664;"/>
                                 </div>
-                                <div class="col-md-6">
-                                    <input type="reset" name="btn_reset" id="btn_reset" class="btn btn-primary"
+                                <div class="col-md-6 btn-div">
+                                    <input type="reset" name="btn_reset" id="btn_reset" class="btn btn-primary grad-btn"
                                         value="Reset" style="background-color: #285664;"/>
                                 </div>
                             </div>
@@ -164,7 +183,7 @@
     </script>
 
     <!-- Footer Starts -->
-    <div class="footer-clean">
+    <div class="footer-clean grad">
         <footer>
             <div class="container">
                 <div class="row justify-content-center">
