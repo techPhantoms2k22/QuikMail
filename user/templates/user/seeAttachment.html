@@ -1,4 +1,5 @@
 {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,32 +16,12 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="{% static 'js/seeAttachment.js' %}"></script>
 </head>
-<body class="body">
-  {% if "inbox" in boxType %}
-  <div id="pass" class="tabcontant">
-    <div class="container">
-      <div class="panel panel-default">
-          <div class="panel-heading grad">
-              <h2>Password for Attachment</h2>
-          </div>
-        <div class="panel-body">
-          <form action="" method="post">
-            {% csrf_token %}
-            <input type="password" name="secretcode" id="" placeholder="Password" class="form-control">
-            <button class="open-button grad-btn">SUBMIT</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% for message in messages %}
-  <div class="alert alert-info" id="msg" role="alert">
-    <h1> <b>{{message}}</b></h1>
-  </div>
-  {% endfor %}
-  {% endif %}
-
-  </div>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="password" name="secretcode" id="">
+        <button type="submit">Submit</button>
+    </form>
     {% if "show" in content %}
       <div id="table">
         <div class="container">
