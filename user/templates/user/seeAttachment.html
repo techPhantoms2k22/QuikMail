@@ -33,6 +33,11 @@
       </div>
     </div>
   </div>
+  {% for message in messages %}
+  <div class="alert alert-info" id="msg" role="alert">
+    <h1> <b>{{message}}</b></h1>
+  </div>
+  {% endfor %}
   {% endif %}
 
   </div>

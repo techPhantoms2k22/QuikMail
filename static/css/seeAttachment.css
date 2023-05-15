@@ -1,7 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap"); */
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
 
 .body {
-    font-family: "Kanit", sans-serif;
+    font-family: 'Inconsolata', monospace;
     background-color: #000000;
 }
 
@@ -13,9 +14,19 @@
     );
   }
 
+  #msg {
+    text-align: center;
+    color: white;
+    background: linear-gradient(90deg, rgba(83,0,0,1) 0%, rgba(121,9,9,1) 35%, rgba(255,0,0,1) 100%);
+    margin: 2% 8% 2% 8%;
+    border-style: none;
+    border-radius: 20px;
+  }
+
   .tabcontent .container {
     width: 50%;
     padding: 50px 0px;
+    /* margin: 0 auto; */
   }
 
   .panel {
@@ -88,8 +99,11 @@
 
 #table {
     text-align: center;
+    margin-top: 5%;
 }
 
 #pass {
     text-align: center;
+    /* margin: 0 auto; */
+    margin-top: 10%;
 }
