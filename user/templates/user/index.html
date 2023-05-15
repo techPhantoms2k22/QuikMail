@@ -95,9 +95,9 @@
             {% csrf_token %}
             <h1><b>Compose</b></h1>
 
-            <input type="text" name="to" placeholder="To" required/>
-            <input type="text" name="sub" placeholder="Subject" required/>
-            <textarea placeholder="Message" name="msg" required></textarea>
+            <input type="text" class="incom" name="to" placeholder="To" required/>
+            <input type="text" class="incom" name="sub" placeholder="Subject" required/>
+            <textarea placeholder="Message" class="incom" name="msg" required></textarea>
             <div class="attach">
                 <i class="fa-solid fa-image" id="file-upload-btn"></i>
                 <input type="file" name="attachment" multiple id="file-upload-input">
@@ -154,8 +154,8 @@
                 Swal.fire({
                             html: inboxContent,
                             width: "500px",
-                            confirmButtonColor:'#285664',
-                            confirmButtonText:'Close',
+                            confirmButtonColor:'#108de7',
+                            confirmButtonText:'CLOSE',
                         })
             </script>
             {% else %}
@@ -165,8 +165,9 @@
                 Swal.fire({
                             html: content,
                             width: "500px",
-                            confirmButtonColor:'#285664',
-                            confirmButtonText:'Close',
+                            confirmButtonColor:'#108de7',
+                            confirmButtonText:'CLOSE',
+                            confirmButtonSize: "500px",
                         })
             </script>
             {% endif %}
@@ -177,8 +178,8 @@
             Swal.fire({
                         html:str,
                         width: "500px",
-                        confirmButtonColor:'#285664',
-                        confirmButtonText:'Close',
+                        confirmButtonColor:'#108de7',
+                        confirmButtonText:'CLOSE',
                     })
         </script>
         {% else %}
@@ -187,8 +188,8 @@
             Swal.fire({
                         html:attachmentstr,
                         width: "500px",
-                        confirmButtonColor:'#285664',
-                        confirmButtonText:'Close',
+                        confirmButtonColor:'#108de7',
+                        confirmButtonText:'CLOSE',
                     })
         </script>
         {% endif %}
