@@ -161,7 +161,7 @@
             {% else %}
             <script>
                 let content = `{{message|linebreaksbr}}<br>
-                                <a href = "{% url 'attachmentContent' message.tags %}" target = "_blank"> Attachments </a`
+                                <a href = "{% url 'attachmentContentInbox' message.tags %}" target = "_blank"> Attachments </a`
                 Swal.fire({
                             html: content,
                             width: "500px",
@@ -183,7 +183,7 @@
         </script>
         {% else %}
         <script>
-            let attachmentstr = `{{message|linebreaksbr}}<br><a href = {{message.tags}} target = "_blank" > Attachment </a`
+            let attachmentstr = `{{message|linebreaksbr}}<br><a href = "{% url 'attachmentContentOutbox' message.tags %}" target = "_blank" target = "_blank" > Attachments </a`
             Swal.fire({
                         html:attachmentstr,
                         width: "500px",
