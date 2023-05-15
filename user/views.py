@@ -108,6 +108,8 @@ def home(request):
             lname = request.POST['lname']
             userid = request.POST['uID']
             password = request.POST['psw']
+            dateOfBirth = request.POST['dob']
+            phoneNumber = request.POST['phone']
             try:
                 checkUser = User.objects.get(username = userid)
                 messages.error(request,"Username Exists")
@@ -117,7 +119,7 @@ def home(request):
                 user.last_name = lname
                 user.save()
                 keyGen(userid)
-                userData = userDatabase(username = userid , firstName = fname , lastName = lname)
+                userData = userDatabase(username = userid , firstName = fname , lastName = lname,dateOfBirth = dateOfBirth,phoneNumber = phoneNumber)
                 userData.save()
                 messages.success(request,"Account Created")
         elif request.POST.get('uname'):
@@ -274,12 +276,11 @@ def seeOutbox(request,id):
     myData=myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
     myObject= list(myData)[0].to_dict()
     msg=myObject['message']
-
+    attachmentURL = ""
     try:
         attachmentURL = myObject['attachmentArray'][0]
     except:
         pass
-
     ifAttachment = False
     try:
         ifAttachment = myObject['attachment']
@@ -292,7 +293,7 @@ def seeOutbox(request,id):
         newMsg = decryptor.decrypt(msg)
         newMsg = newMsg.decode('utf-8')
         if ifAttachment is True:
-            messages.warning(request,newMsg,extra_tags=attachmentURL)
+            messages.warning(request,newMsg,extra_tags=id)
         else:
             messages.warning(request,newMsg,extra_tags="noData")
     except:
@@ -303,15 +304,21 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
-def attachmentContentDownload_Inbox(request,id):
+def attachmentContent_Inbox(request,id):
     content = "hidden"
+    boxType = "inbox"
     extensionList = []
     contentArray = []
     temporaryList = {}
     if request.method == "POST":
         passCode = request.POST['secretcode']
-        if passCode == "happy":
+        databaseObject = userDatabase.objects.get(username = request.user.username)
+        dateOfBirth = databaseObject.dateOfBirth
+        phoneNumber = databaseObject.phoneNumber
+        truePasscode = str(dateOfBirth)[:-6]+phoneNumber[6:]
+        if passCode == truePasscode:
             content = "show"
+            boxType = "outbox"
             id = id[:-5]
             firebaseDatabaseConnection()
             myDB= firestore.client()
@@ -331,10 +338,39 @@ def attachmentContentDownload_Inbox(request,id):
         else:
             return HttpResponse("Password Wrong")
     context = {
+        'boxType' : boxType ,
         'content' : content,
         'contentArray':contentArray,
     }
     return render(request,'user/seeAttachment.html',context)
 #################################################################
 #Testing
+def attachmentContent_Outbox(request,id):
+    content = "show"
+    extensionList = []
+    contentArray = []
+    temporaryList = {}
+    id = id[:-8]
+    print(len(id),request.user.username)
+    firebaseDatabaseConnection()
+    myDB= firestore.client()
+    myData=myDB.collection('usersDB').document(request.user.username).collection('outbox').where("id","==",id).get()
+    myObject= list(myData)[0].to_dict()
+    attachments = myObject['attachmentArray']
+    extension = myObject['attachmentType']
+    try:
+        extensionList = myObject['extensionList']
+    except:
+        extensionList.append(extension)
+    for i in range(len(extensionList)):
+        temporaryList['extensionType'] = extensionList[i]
+        temporaryList['attachmentURL'] = attachments[i]
+        contentArray.append(temporaryList.copy())
+        temporaryList.clear()
+    context = {
+        'boxType' : "outbox",
+        'content' : content,
+        'contentArray':contentArray,
+    }
+    return render(request,'user/seeAttachment.html',context)
 #################################################################
