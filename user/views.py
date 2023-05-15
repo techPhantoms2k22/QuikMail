@@ -336,7 +336,7 @@ def attachmentContent_Inbox(request,id):
                 contentArray.append(temporaryList.copy())
                 temporaryList.clear()
         else:
-            return HttpResponse("Password Wrong")
+            messages.error(request,"Wrong Password !!")
     context = {
         'boxType' : boxType ,
         'content' : content,

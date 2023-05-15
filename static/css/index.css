@@ -1,4 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600&display=swap"); */
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
+
 div.swal2-html-container {
   /* background-color: black; */
   /* font-family: Arial, Helvetica, sans-serif; */
@@ -15,7 +17,7 @@ div.swal2-actions {
 }
 
 body {
-  font-family: "Kanit", sans-serif;
+  font-family: 'Inconsolata', monospace;
   background-color: #000000;
 }
 
@@ -281,12 +283,34 @@ div.swal2-actions {
   outline: none;
 }
 
+.form-container h1 {
+  text-align: center;
+  color: white;
+  background: radial-gradient(
+    circle,
+    rgba(104, 163, 233, 1) 28%,
+    rgba(237, 12, 225, 1) 100%
+  );
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.incom {
+  border-radius: 20px;
+}
+
 /* Set a style for the submit/send button */
 .form-container .btn {
-  background-color: #429bb6;
+  /* background-color: #429bb6; */
+  border-radius: 20px;
+  background: linear-gradient(
+    23deg,
+    rgba(18, 114, 230, 1) 20%,
+    rgba(10, 231, 236, 1) 100%
+  );
   color: white;
   padding: 16px 20px;
-  border: none;
+  border-style: none;
   cursor: pointer;
   width: 100%;
   margin-bottom: 10px;

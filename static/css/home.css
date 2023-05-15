@@ -1,5 +1,6 @@
 /* swal css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
 div.swal2-html-container {
   /* background-color: black; */
   /* font-family: Arial, Helvetica, sans-serif; */
@@ -10,7 +11,7 @@ div.swal2-actions {
   font-size: 15px;
 }
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Inconsolata', monospace;
   /* font-size: 10rem; */
 }
 
